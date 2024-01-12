@@ -29,13 +29,18 @@ export type Car = {
 
 export type InitialCar = Readonly<Pick<Car, 'color' | 'x' | 'vx' | 'ax'>>;
 
-export const DIMENSIONS = [75, 50] as const;
+export const CAR_DIMENSIONS = [75, 50] as const;
 
 type RenderableCar = Graphics & Car & { initial: InitialCar };
 export function createCar(initial: InitialCar): RenderableCar {
 	const g = new Graphics();
 	g.beginFill(initial.color);
-	g.drawRect(0, 0, ...DIMENSIONS);
+	g.drawRect(0, 0, ...CAR_DIMENSIONS);
 
 	return Object.assign(g, { initial: initial, ...initial });
+}
+
+export function updateCar(car: Car) {
+	car.x += car.vx;
+	car.vx += car.ax;
 }
