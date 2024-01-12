@@ -44,3 +44,9 @@ export function updateCar(car: Car) {
 	car.x += car.vx;
 	car.vx += car.ax;
 }
+
+export function resetCar(car: RenderableCar) {
+	car.x = car.initial.x;
+	car.vx = car.initial.vx;
+	car.ax = car.initial.ax;
+}

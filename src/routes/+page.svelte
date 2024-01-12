@@ -3,7 +3,7 @@
 	import { onMount } from 'svelte';
 
 	import { CANVAS_DIMENSIONS, COLORS } from '$lib/const';
-	import { CAR_DIMENSIONS, createCar, updateCar } from '$lib/Car';
+	import { CAR_DIMENSIONS, createCar, resetCar, updateCar } from '$lib/Car';
 	import { addToCenter, center } from '$lib/utils';
 
 	let canvas: HTMLCanvasElement;
@@ -25,6 +25,8 @@
 
 	let app: Application;
 
+	let ticker: Ticker;
+
 	onMount(() => {
 		app = new Application({
 			view: canvas,
@@ -43,15 +45,40 @@
 		addToCenter(road, lead);
 		addToCenter(road, follow);
 
+		ticker = Ticker.shared;
+		ticker.autoStart = false;
+
+		ticker.add(() => {
+			elapsed += 1;
+
+			updateCar(follow);
+			updateCar(lead);
+		});
+
 		return () => {
 			road.clear();
 			lead.clear();
 			follow.clear();
 		};
 	});
+
+	function tickerToggle() {
+		if (ticker.started) ticker.stop();
+		else ticker.start();
+	}
+
+	function tickerReset() {
+		if (ticker.started) ticker.stop();
+		resetCar(follow);
+		resetCar(lead);
+	}
 </script>
 
 <main>
 	<canvas bind:this={canvas}></canvas>
 	<br />
+
+	<button on:click={tickerToggle}>Start/Stop</button>
+
+	<button on:click={tickerReset}>Reset</button>
 </main>
