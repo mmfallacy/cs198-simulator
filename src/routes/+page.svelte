@@ -1,2 +1,13 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+<script lang="ts">
+	import { simulator } from '$lib/simulator';
+
+	const sim = simulator();
+
+	while (true) {
+		const { value, done } = sim.next();
+
+		if (done) break;
+
+		console.log(value);
+	}
+</script>
