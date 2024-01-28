@@ -1,7 +1,20 @@
 <script lang="ts">
-	import { simulator } from '$lib/simulator';
+	import { simulator, type State } from '$lib/simulator';
 
-	const sim = simulator();
+	const init: State = {
+		cars: [
+			{
+				x: 0,
+				vx: 1
+			},
+			{
+				x: 1,
+				vx: 2
+			}
+		],
+		step: 0
+	};
+	const sim = simulator(init);
 
 	while (true) {
 		const { value, done } = sim.next();
