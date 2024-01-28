@@ -5,7 +5,7 @@ export interface Car {
 
 export interface State {
 	cars: Array<Car>;
-	step: number;
+	tick: number;
 }
 
 export function* simulator(init: State) {
@@ -18,7 +18,7 @@ export function* simulator(init: State) {
 		// Temporary halting condition
 		if (state.cars.some((car) => car.x >= 100)) return;
 
-		state.step++;
+		state.tick++;
 		yield state;
 	}
 }

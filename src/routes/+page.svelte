@@ -15,7 +15,7 @@
 
 	const init: State = {
 		cars: [FV, LV],
-		step: 0
+		tick: 0
 	};
 	const sim = simulator(init);
 
