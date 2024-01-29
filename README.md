@@ -1,38 +1,43 @@
-# create-svelte
+# Simulation-based benchmarking for Forward Collision Warning Algorithms
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).
+CS 198/199 - Scientific Computing Laboratory
 
-## Creating a project
+Michael Angelo L. Monasterial
 
-If you're seeing this, you've probably already done this step. Congrats!
+BS Computer Science | University of the Philippines - Diliman.
 
-```bash
-# create a new project in the current directory
-npm create svelte@latest
+## Abstract
 
-# create a new project in my-app
-npm create svelte@latest my-app
-```
+### \<header pending\>
 
-## Developing
+This project utilizes generators in order to create a simulator for selecting an FCW
+algorithm. The scenario is as such:
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+- Randomize some initial parameters for the vehicles.
+- Calculate the initial warning distances based on those parameters.
+- Initialize two vehicles (FV, LV).
+- Assume both FV and LV do not have FCWS.
+- FV and LV go through the road while FV maintains the precomputed warning distance as headway.
+- LV slows down at some predefined position.
+- The driver of FV stochastically chooses to break based on some parameters
 
-```bash
-npm run dev
+This then makes the simulation FCWS agnostic, rather it only tests the performance of the algorithm based on the stochasticity of the driver - how safe the warning distance is if the driver decides to heed the warning late.
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
+The scenarios are run <img src="https://latex.codecogs.com/svg.latex?N"/> times, taking note of the number of collisions (<img src="https://latex.codecogs.com/svg.latex?n"/>). This gives us the probability of collision (<img src="https://latex.codecogs.com/svg.latex?%p"/>) through the Monte Carlo Method.
 
-## Building
+<img src="https://latex.codecogs.com/svg.latex?%p"/> is then compared to FV's average speed throughout the simulation. This ensures that we determine the algorithm that yields a safe enough warning distance while minimizing the time loss due to braking.
 
-To create a production version of your app:
+### Pool of Algorithms
 
-```bash
-npm run build
-```
+- **Kinematics**:
+  - Stop Distance
+  - Mazda
+  - PATH
+- **Perceptual**:
+  - Honda
+  - Hirst & Graham
+  - Bella & Russo
 
-You can preview the production build with `npm run preview`.
+## Instructions
 
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+`git clone`, `npm/yarn/pnpm install`, `npm/yarn/pnpm dev`.
