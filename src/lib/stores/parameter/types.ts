@@ -14,8 +14,10 @@ export const SimParameterSchema = v.object({
 	ts: v.number([v.minValue(0)]),
 	// Minimum Safety Distance (float)
 	dmin: v.number([v.minValue(0)]),
-	// Test runs (positive integer)
-	N: v.number([v.minValue(0), v.integer()])
+	// Test runs (positive integer),
+	N: v.number([v.minValue(0), v.integer()]),
+	// Ticks per second,
+	tps: v.number([v.minValue(0), v.integer()])
 });
 
 export const ParameterSchema = v.object({

@@ -14,7 +14,8 @@ const initialParameters: ParameterInput = {
 		tr: 0,
 		ts: 0,
 		dmin: 0,
-		N: 0
+		N: 0,
+		tps: 0
 	}
 } as const;
 
