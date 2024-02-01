@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { pixiCanvas } from '$lib/actions/pixiCanvas';
+	import Params from '$lib/components/Params.svelte';
 	import { simulator, type Car, type State } from '$lib/simulator';
 	import { Application, Graphics } from 'pixi.js';
 
@@ -27,7 +28,10 @@
 		console.log(value);
 	}
 
-	const app = new Application<HTMLCanvasElement>();
+	const app = new Application<HTMLCanvasElement>({
+		width: 1366,
+		height: 768
+	});
 
 	const test = new Graphics();
 	test.beginFill(0xff0000);
@@ -37,4 +41,21 @@
 	app.stage.addChild(test);
 </script>
 
-<div use:pixiCanvas={app.view} />
+<main>
+	<section use:pixiCanvas={app.view} />
+	<section class="params">
+		<Params />
+	</section>
+</main>
+
+<style>
+	main {
+		display: grid;
+		grid-template-columns: auto max-content;
+		gap: 1rem;
+	}
+
+	.params {
+		min-width: 60ch;
+	}
+</style>
