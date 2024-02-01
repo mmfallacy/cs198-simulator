@@ -1,31 +1,25 @@
 <script lang="ts">
 	import { pixiCanvas } from '$lib/actions/pixiCanvas';
+	import { sda } from '$lib/algorithms';
 	import Params from '$lib/components/Params.svelte';
-	import { simulator, type Car, type State } from '$lib/simulator';
+	import { simulator } from '$lib/simulator';
+	import { ParameterStore as params } from '$lib/stores/parameter/ParameterStore';
 	import { Application, Graphics } from 'pixi.js';
 
-	const LV: Car = {
-		x: 0,
-		vx: 1
-	};
+	const sim = simulator($params, sda);
 
-	const FV: Car = {
-		x: 1,
-		vx: 2
-	};
-
-	const init: State = {
-		cars: [FV, LV],
-		tick: 0
-	};
-	const sim = simulator(init);
+	const MAX_TICK = 10e3;
 
 	while (true) {
 		const { value, done } = sim.next();
 
-		if (done) break;
+		if (done || value.tick > MAX_TICK) break;
 
-		console.log(value);
+		console.log(value.tick, value.dw);
+		console.log('FV');
+		console.table(value.FV);
+		console.log('LV');
+		console.table(value.LV);
 	}
 
 	const app = new Application<HTMLCanvasElement>({
