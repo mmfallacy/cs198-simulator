@@ -1,11 +1,17 @@
 import type { AlgorithmInputs, Algorithm } from './algorithms';
 import type { ParameterInput, SimParameterInput } from './stores/parameter/types';
 
+export const CAR_DIMENSIONS = {
+	h: 60,
+	w: 120
+};
+
 export interface Car {
 	x: number;
 	vx: number;
 	ax: number;
 	abr: number;
+	width: number;
 }
 
 export interface State {
@@ -32,14 +38,16 @@ export function* simulator(params: ParameterInput, fcwa: Algorithm) {
 		x: 0,
 		vx: params.FV.vx,
 		ax: 0.001,
-		abr: params.FV.abr
+		abr: params.FV.abr,
+		width: CAR_DIMENSIONS.w
 	};
 
 	const LV: Car = {
-		x: params.Sim.dmin,
+		x: params.Sim.id + FV.width,
 		vx: params.LV.vx,
 		ax: 0,
-		abr: params.LV.abr
+		abr: params.LV.abr,
+		width: CAR_DIMENSIONS.w
 	};
 
 	const state: State = { FV, LV, tick: 0, dw: 0 };
@@ -55,7 +63,7 @@ export function* simulator(params: ParameterInput, fcwa: Algorithm) {
 		state.LV.x += state.LV.vx;
 		state.LV.vx += state.LV.ax;
 
-		if (state.FV.x > state.LV.x) return;
+		if (state.FV.x + 120 > state.LV.x) return;
 		yield state;
 	}
 }
