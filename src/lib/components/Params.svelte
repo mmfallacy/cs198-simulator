@@ -21,5 +21,7 @@
 <input bind:value={$params.Sim.ts} />
 <h4>Minimum safety distance (m)</h4>
 <input bind:value={$params.Sim.dmin} />
+<h4>Initial distance between FV and LV</h4>
+<input bind:value={$params.Sim.id} />
 <h4>Number of test runs</h4>
 <input bind:value={$params.Sim.N} />
