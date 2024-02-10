@@ -3,14 +3,16 @@
 	import { sda } from '$lib/algorithms';
 	import { COLORS } from '$lib/colors';
 	import Params from '$lib/components/Params.svelte';
-	import { CAR_DIMENSIONS, simulator } from '$lib/simulator';
+	import { CAR_DIMENSIONS, RATIO } from '$lib/const';
+	import { simulator, type State } from '$lib/simulator';
 	import { ParameterStore as params } from '$lib/stores/parameter/ParameterStore';
 	import { Application, Container, Graphics, type ColorSource } from 'pixi.js';
 	import { onDestroy } from 'svelte';
 
-	const sim = simulator($params, sda);
+	$: sim = simulator($params, sda);
 
-	const MAX_TICK = 10e3;
+	const MAX_TICK = 10e5;
+	let speed = 1;
 
 	// while (true) {
 	// 	const { value, done } = sim.next();
@@ -62,17 +64,30 @@
 	addToCenter(road, FV);
 	addToCenter(road, LV);
 
-	function render() {
-		const { value, done } = sim.next();
-		if (done || value.tick > MAX_TICK) return;
+	function log(val: State) {
+		const { FV, LV, tick, dw } = val;
 
-		FV.x = value.FV.x;
-		LV.x = value.LV.x;
-
-		requestAnimationFrame(() => setTimeout(render, 10));
+		console.group(`${tick} - (${dw})`);
+		console.info('FV');
+		console.table({ ...FV, pxx: FV.x * RATIO.px_per_m });
+		console.info('LV');
+		console.table({ ...LV, pxx: LV.x * RATIO.px_per_m });
+		console.groupEnd();
 	}
 
-	requestAnimationFrame(() => setTimeout(render, 10));
+	function render() {
+		const { value, done } = sim.next();
+		if (done) return;
+		if (value.tick > MAX_TICK) return;
+		if (value.FV.x * RATIO.px_per_m > app.screen.width) return;
+
+		log(value);
+
+		FV.x = value.FV.x * RATIO.px_per_m;
+		LV.x = value.LV.x * RATIO.px_per_m;
+
+		requestAnimationFrame(() => setTimeout(render, 1000 / ($params.Sim.tps * speed)));
+	}
 
 	onDestroy(function () {
 		app.destroy(false, { children: true });
@@ -80,7 +95,12 @@
 </script>
 
 <main>
-	<section use:pixiCanvas={app.view} />
+	<section>
+		<div use:pixiCanvas={app.view} />
+		<h4>{speed}x</h4>
+		<input type="range" min="0.25" max="2" step="0.25" bind:value={speed} />
+		<button on:click={() => requestAnimationFrame(render)}>Start</button>
+	</section>
 	<section class="params">
 		<Params />
 	</section>
