@@ -13,10 +13,10 @@ const initialParameters: ParameterInput = {
 	Sim: {
 		tr: 10,
 		ts: 10,
-		dmin: 10,
-		id: 10,
+		dmin: 1,
+		id: 1,
 		N: 0,
-		tps: 0
+		tps: 120
 	}
 } as const;
 
