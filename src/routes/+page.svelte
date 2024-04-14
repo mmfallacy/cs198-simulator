@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { pixiCanvas } from '$lib/actions/pixiCanvas';
-	import { sda } from '$lib/algorithms';
+	import { honda, sda } from '$lib/algorithms';
 	import { COLORS } from '$lib/colors';
 	import Params from '$lib/components/Params.svelte';
 	import { CAR_DIMENSIONS, RATIO } from '$lib/const';
@@ -9,7 +9,7 @@
 	import { Application, Container, Graphics, type ColorSource } from 'pixi.js';
 	import { onDestroy } from 'svelte';
 
-	$: sim = simulator($params, sda);
+	$: sim = simulator($params, honda);
 
 	const MAX_TICK = 10e5;
 	let speed = 1;
@@ -48,6 +48,15 @@
 		return car;
 	}
 
+	function createMarker(fill: ColorSource) {
+		const marker = new Graphics();
+		marker.beginFill(fill);
+		marker.drawRect(0, 0, 2, CAR_DIMENSIONS.h - 10);
+		marker.endFill();
+
+		return marker;
+	}
+
 	function addToCenter(parent: Container, child: Graphics, x: boolean = false, y: boolean = true) {
 		if (x) child.x = (parent.width - child.width) / 2;
 		if (y) child.y = (parent.height - child.height) / 2;
@@ -61,8 +70,11 @@
 
 	const FV = createVehicle(COLORS.RED[500]);
 	const LV = createVehicle(COLORS.GREEN[500]);
+	const marker = createMarker(COLORS.GREEN[200]);
+
 	addToCenter(road, FV);
 	addToCenter(road, LV);
+	addToCenter(road, marker);
 
 	function log(val: State) {
 		const { FV, LV, tick, dw } = val;
@@ -88,12 +100,20 @@
 		FV.x = value.FV.x * RATIO.px_per_m;
 		LV.x = value.LV.x * RATIO.px_per_m;
 
+		warning_distance = value.dw * RATIO.px_per_m;
+		dw_hit = value.dw_hit;
+
+		marker.x = (value.LV.x - value.dw) * RATIO.px_per_m;
+
 		requestAnimationFrame(() => setTimeout(render, 1000 / ($params.Sim.tps * speed)));
 	}
 
 	onDestroy(function () {
 		app.destroy(false, { children: true });
 	});
+
+	let warning_distance = -Number.NEGATIVE_INFINITY;
+	let dw_hit = false;
 </script>
 
 <main>
@@ -102,6 +122,7 @@
 		<h4>{speed}x</h4>
 		<input type="range" min="0.25" max="2" step="0.25" bind:value={speed} />
 		<button on:click={() => requestAnimationFrame(render)}>Start</button>
+		<h4>wd: {warning_distance} {dw_hit ? 'hit' : 'not hit'}</h4>
 	</section>
 	<section class="params">
 		<Params />
