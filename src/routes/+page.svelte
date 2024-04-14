@@ -14,18 +14,6 @@
 	const MAX_TICK = 10e5;
 	let speed = 1;
 
-	// while (true) {
-	// 	const { value, done } = sim.next();
-
-	// 	if (done || value.tick > MAX_TICK) break;
-
-	// 	console.log(value.tick, value.dw);
-	// 	console.log('FV');
-	// 	console.table(value.FV);
-	// 	console.log('LV');
-	// 	console.table(value.LV);
-	// }
-
 	const app = new Application<HTMLCanvasElement>({
 		width: 1366,
 		height: 768
