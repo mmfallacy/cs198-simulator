@@ -110,9 +110,11 @@
 <main>
 	<section>
 		<div use:pixiCanvas={app.view} />
-		<h4>{speed}x</h4>
-		<input type="range" min="0.25" max="2" step="0.25" bind:value={speed} />
-		<button on:click={() => requestAnimationFrame(render)}>Start</button>
+		<span class="flex">
+			<label for="speed">{speed}x</label>
+			<input name="speed" type="range" min="0.25" max="2" step="0.25" bind:value={speed} />
+			<button on:click={() => requestAnimationFrame(render)}>Start</button>
+		</span>
 		{#if typeof gauges != 'undefined'}
 			<h4>Headway: {gauges.headway}</h4>
 			<h4>Warning Distance ({gauges.dw_hit ? 'Hit' : 'No Hit'}): {gauges.dw}</h4>
