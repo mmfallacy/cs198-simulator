@@ -3,12 +3,12 @@ import type { ParameterInput } from './types';
 
 const initialParameters: ParameterInput = {
 	FV: {
-		vx: 1,
-		abr: 1
+		vx: 10,
+		abr: -5
 	},
 	LV: {
-		vx: 1,
-		abr: 1
+		vx: 10,
+		abr: -5
 	},
 	Sim: {
 		tr: 10,
