@@ -22,6 +22,15 @@ export const mazda: Algorithm = (inputs) => {
 
 export const honda: Algorithm = (inputs) => {
 	const { vf, vl } = inputs;
-	console.log(vf, vl);
 	return 2.2 * (vf - vl);
+};
+
+export const hirstgraham: Algorithm = (inputs) => {
+	const { vf, vl } = inputs;
+	return 3 * (vf - vl) + 0.4905 * vf;
+};
+
+export const bellarusso: Algorithm = (inputs) => {
+	const { vf, vl } = inputs;
+	return 1.25 * (vf - vl) + 1.55 * vf;
 };
