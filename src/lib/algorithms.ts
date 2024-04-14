@@ -36,6 +36,6 @@ export const bellarusso: Algorithm = (inputs) => {
 };
 
 // With dmin wrapper. Clamp algorithm values to have a minimum value of dmin
-export function withdmin(algo: Algorithm, dmin: number): Algorithm {
-	return (inputs) => Math.max(algo(inputs), dmin);
+export function withdmin(algo: Algorithm): Algorithm {
+	return (inputs) => Math.max(algo(inputs), inputs.dmin);
 }
