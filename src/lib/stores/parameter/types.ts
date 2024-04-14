@@ -4,7 +4,9 @@ export const CarParameterSchema = v.object({
 	// Initial velocity (float)
 	vx: v.number(),
 	// Acceleration due to braking (negative float).
-	abr: v.number([v.maxValue(0)])
+	abr: v.number([v.maxValue(0)]),
+	// Acceleration. (positive float)
+	ax: v.number([v.minValue(0)])
 });
 
 export const SimParameterSchema = v.object({

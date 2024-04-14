@@ -40,14 +40,14 @@ export function* simulator(params: ParameterInput, fcwa: Algorithm) {
 	const FV: Car = {
 		x: 0, // in meters
 		vx: params.FV.vx / RATIO.kph_per_mps, // in mps (from kph)
-		ax: 0.1, // in mps^2
+		ax: params.FV.ax, // in mps^2
 		abr: params.FV.abr // in mps^2
 	};
 
 	const LV: Car = {
 		x: params.Sim.id + CAR_W_METER, // in meters
 		vx: params.LV.vx / RATIO.kph_per_mps, // in mps (from kph)
-		ax: 0, // in mps^2
+		ax: params.LV.ax, // in mps^2
 		abr: params.LV.abr // in mps^2
 	};
 
