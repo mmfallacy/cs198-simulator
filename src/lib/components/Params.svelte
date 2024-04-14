@@ -5,9 +5,9 @@
 <h2>Following Vehicle (FV):</h2>
 <h4>Initial Velocity (+ km/h)</h4>
 <input bind:value={$params.FV.vx} />
-<h4>Acceleration due to braking (- km/h^2)</h4>
+<h4>Acceleration due to braking (- mps^2)</h4>
 <input bind:value={$params.FV.abr} />
-<h4>Acceleration (+ km/h^2)</h4>
+<h4>Acceleration (+ mps^2)</h4>
 <input bind:value={$params.FV.ax} />
 
 <h2>Leading Vehicle (LV):</h2>
