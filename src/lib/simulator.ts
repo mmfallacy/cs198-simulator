@@ -31,6 +31,10 @@ function adapter(FV: Car, LV: Car, Sim: SimParameterInput): AlgorithmInputs {
 
 const CAR_W_METER = CAR_DIMENSIONS.w / RATIO.px_per_m;
 
+function distance(FV: Car, LV: Car) {
+	return LV.x - (FV.x + CAR_W_METER);
+}
+
 export function* simulator(params: ParameterInput, fcwa: Algorithm) {
 	const FV: Car = {
 		x: 0, // in meters
@@ -61,7 +65,7 @@ export function* simulator(params: ParameterInput, fcwa: Algorithm) {
 		state.dw = fcwa(adapter(FV, LV, params.Sim));
 
 		// If warning distance is hit, decelerate
-		if (state.LV.x - state.FV.x - CAR_W_METER <= state.dw) {
+		if (distance(state.FV, state.LV) <= state.dw) {
 			state.FV.vx += Math.min(state.FV.abr * spt, 0);
 			state.dw_hit = true;
 		}
@@ -70,7 +74,7 @@ export function* simulator(params: ParameterInput, fcwa: Algorithm) {
 			state.FV.vx += state.FV.ax * spt;
 			state.dw_hit = false;
 		}
-		if (state.FV.x + CAR_W_METER > state.LV.x) return;
+		if (distance(state.FV, state.LV) <= 0) return;
 		yield state;
 	}
 }
