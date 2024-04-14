@@ -100,8 +100,11 @@
 		FV.x = value.FV.x * RATIO.px_per_m;
 		LV.x = value.LV.x * RATIO.px_per_m;
 
-		warning_distance = value.dw * RATIO.px_per_m;
-		dw_hit = value.dw_hit;
+		gauges = {
+			dw: value.dw,
+			dw_hit: value.dw_hit,
+			headway: value.headway
+		};
 
 		marker.x = (value.LV.x - value.dw) * RATIO.px_per_m;
 
@@ -112,8 +115,7 @@
 		app.destroy(false, { children: true });
 	});
 
-	let warning_distance = -Number.NEGATIVE_INFINITY;
-	let dw_hit = false;
+	let gauges: Partial<State>;
 </script>
 
 <main>
@@ -122,7 +124,10 @@
 		<h4>{speed}x</h4>
 		<input type="range" min="0.25" max="2" step="0.25" bind:value={speed} />
 		<button on:click={() => requestAnimationFrame(render)}>Start</button>
-		<h4>wd: {warning_distance} {dw_hit ? 'hit' : 'not hit'}</h4>
+		{#if typeof gauges != 'undefined'}
+			<h4>Headway: {gauges.headway}</h4>
+			<h4>Warning Distance ({gauges.dw_hit ? 'Hit' : 'No Hit'}): {gauges.dw}</h4>
+		{/if}
 	</section>
 	<section class="params">
 		<Params />
