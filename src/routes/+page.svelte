@@ -78,6 +78,8 @@
 	function render() {
 		const { value, done } = sim.next();
 		if (done) return;
+		// Halt simulator on out of bounds
+		if (value.FV.x > app.screen.width) return;
 		if (value.tick > MAX_TICK) return;
 		if (value.FV.x * RATIO.px_per_m > app.screen.width) return;
 
