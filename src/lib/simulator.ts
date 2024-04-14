@@ -15,6 +15,7 @@ export interface State {
 	tick: number;
 	dw: number;
 	dw_hit: boolean;
+	headway: number;
 }
 
 function adapter(FV: Car, LV: Car, Sim: SimParameterInput): AlgorithmInputs {
@@ -50,7 +51,7 @@ export function* simulator(params: ParameterInput, fcwa: Algorithm) {
 		abr: params.LV.abr // in mps^2
 	};
 
-	const state: State = { FV, LV, tick: 0, dw: 0, dw_hit: false };
+	const state: State = { FV, LV, tick: 0, dw: 0, dw_hit: false, headway: Number.NEGATIVE_INFINITY };
 
 	const spt = 1 / params.Sim.tps;
 
@@ -64,8 +65,10 @@ export function* simulator(params: ParameterInput, fcwa: Algorithm) {
 
 		state.dw = fcwa(adapter(FV, LV, params.Sim));
 
+		state.headway = distance(state.FV, state.LV);
+
 		// If warning distance is hit, decelerate
-		if (distance(state.FV, state.LV) <= state.dw) {
+		if (state.headway <= state.dw) {
 			state.FV.vx += Math.min(state.FV.abr * spt, 0);
 			state.dw_hit = true;
 		}
@@ -74,7 +77,7 @@ export function* simulator(params: ParameterInput, fcwa: Algorithm) {
 			state.FV.vx += state.FV.ax * spt;
 			state.dw_hit = false;
 		}
-		if (distance(state.FV, state.LV) <= 0) return;
+		if (state.headway <= 0) return;
 		yield state;
 	}
 }
