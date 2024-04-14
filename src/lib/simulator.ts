@@ -1,6 +1,7 @@
 import type { AlgorithmInputs, Algorithm } from './algorithms';
 import { CAR_DIMENSIONS, RATIO } from './const';
 import type { ParameterInput, SimParameterInput } from './stores/parameter/types';
+import { quadrealroot } from './utils';
 
 export interface Car {
 	x: number;
@@ -16,6 +17,7 @@ export interface State {
 	dw: number;
 	dw_hit: boolean;
 	headway: number;
+	mttc: number;
 }
 
 function adapter(FV: Car, LV: Car, Sim: SimParameterInput): AlgorithmInputs {
@@ -36,6 +38,12 @@ function distance(FV: Car, LV: Car) {
 	return LV.x - (FV.x + CAR_W_METER);
 }
 
+function mttc(FV: Car, LV: Car) {
+	const roots = quadrealroot(0.5 * (FV.ax - LV.ax), FV.vx - LV.vx, -distance(FV, LV));
+	if (isNaN(roots[0])) return Number.NEGATIVE_INFINITY;
+	return Math.max(...roots);
+}
+
 export function* simulator(params: ParameterInput, fcwa: Algorithm) {
 	const FV: Car = {
 		x: 0, // in meters
@@ -51,7 +59,15 @@ export function* simulator(params: ParameterInput, fcwa: Algorithm) {
 		abr: params.LV.abr // in mps^2
 	};
 
-	const state: State = { FV, LV, tick: 0, dw: 0, dw_hit: false, headway: Number.NEGATIVE_INFINITY };
+	const state: State = {
+		FV,
+		LV,
+		tick: 0,
+		dw: 0,
+		dw_hit: false,
+		headway: Number.NEGATIVE_INFINITY,
+		mttc: Number.NEGATIVE_INFINITY
+	};
 
 	const spt = 1 / params.Sim.tps;
 
@@ -66,6 +82,8 @@ export function* simulator(params: ParameterInput, fcwa: Algorithm) {
 		state.dw = fcwa(adapter(FV, LV, params.Sim));
 
 		state.headway = distance(state.FV, state.LV);
+
+		state.mttc = mttc(FV, LV);
 
 		// If warning distance is hit, decelerate
 		if (state.headway <= state.dw) {

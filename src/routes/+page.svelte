@@ -91,7 +91,8 @@
 		gauges = {
 			dw: value.dw,
 			dw_hit: value.dw_hit,
-			headway: value.headway
+			headway: value.headway,
+			mttc: value.mttc
 		};
 
 		marker.x = (value.LV.x - value.dw) * RATIO.px_per_m;
@@ -115,6 +116,7 @@
 		{#if typeof gauges != 'undefined'}
 			<h4>Headway: {gauges.headway}</h4>
 			<h4>Warning Distance ({gauges.dw_hit ? 'Hit' : 'No Hit'}): {gauges.dw}</h4>
+			<h4>MTTC: {gauges.mttc}</h4>
 		{/if}
 	</section>
 	<section class="params">
