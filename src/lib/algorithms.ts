@@ -19,3 +19,9 @@ export const mazda: Algorithm = (inputs) => {
 	const { vf, af, vl, al, tr, ts, dmin } = inputs;
 	return vf * tr + Math.abs(vf - vl) * ts + (vf * vf) / (2 * af) - (vl * vl) / (2 * al) + dmin;
 };
+
+export const honda: Algorithm = (inputs) => {
+	const { vf, vl } = inputs;
+	console.log(vf, vl);
+	return 2.2 * (vf - vl);
+};
