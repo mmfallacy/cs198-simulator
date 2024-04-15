@@ -120,7 +120,9 @@
 		{#if typeof gauges != 'undefined'}
 			<h4>Current Headway: {gauges.headway}</h4>
 			<h4>Average Headway: {gauges.ave_headway}</h4>
-			<h4>Following car Average velocity: {gauges.FV?.ave_vx * RATIO.kph_per_mps}</h4>
+			{#if typeof gauges.FV != 'undefined'}
+				<h4>Following car Average velocity: {gauges.FV.ave_vx * RATIO.kph_per_mps}</h4>
+			{/if}
 			<h4>Warning Distance ({gauges.dw_hit ? 'Hit' : 'No Hit'}): {gauges.dw}</h4>
 			<h4>MTTC: {gauges.mttc}</h4>
 		{/if}
