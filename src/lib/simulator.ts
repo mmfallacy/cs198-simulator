@@ -41,7 +41,7 @@ function distance(FV: Car, LV: Car) {
 function mttc(FV: Car, LV: Car) {
 	const roots = quadrealroot(0.5 * (FV.ax - LV.ax), FV.vx - LV.vx, -distance(FV, LV));
 	if (isNaN(roots[0])) return Number.NEGATIVE_INFINITY;
-	return Math.max(...roots);
+	return Math.min(...roots.filter((n) => n > 0));
 }
 
 export function* simulator(params: ParameterInput, fcwa: Algorithm) {
