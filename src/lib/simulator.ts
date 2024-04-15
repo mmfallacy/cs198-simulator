@@ -6,6 +6,7 @@ import { quadrealroot } from './utils';
 export interface Car {
 	x: number;
 	vx: number;
+	ave_vx: number;
 	ax: number;
 	abr: number;
 }
@@ -49,6 +50,7 @@ export function* simulator(params: ParameterInput, fcwa: Algorithm) {
 	const FV: Car = {
 		x: 0, // in meters
 		vx: params.FV.vx / RATIO.kph_per_mps, // in mps (from kph)
+		ave_vx: params.FV.vx / RATIO.kph_per_mps, // average vx in mps
 		ax: params.FV.ax, // in mps^2
 		abr: params.FV.abr // in mps^2
 	};
@@ -56,6 +58,7 @@ export function* simulator(params: ParameterInput, fcwa: Algorithm) {
 	const LV: Car = {
 		x: params.Sim.id + CAR_W_METER, // in meters
 		vx: params.LV.vx / RATIO.kph_per_mps, // in mps (from kph)
+		ave_vx: params.LV.vx / RATIO.kph_per_mps, // average vx in mps
 		ax: params.LV.ax, // in mps^2
 		abr: params.LV.abr // in mps^2
 	};
@@ -99,6 +102,11 @@ export function* simulator(params: ParameterInput, fcwa: Algorithm) {
 			state.FV.vx += state.FV.ax * spt;
 			state.dw_hit = false;
 		}
+
+		// Compute continuous average velocities for both cars.
+		state.FV.ave_vx += (state.FV.vx - state.FV.ave_vx) / state.tick;
+		state.LV.ave_vx += (state.LV.vx - state.LV.ave_vx) / state.tick;
+
 		if (state.headway <= 0) return;
 		yield state;
 	}

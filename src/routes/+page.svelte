@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { pixiCanvas } from '$lib/actions/pixiCanvas';
-	import { honda } from '$lib/algorithms';
+	import { honda, withdmin } from '$lib/algorithms';
 	import { COLORS } from '$lib/colors';
 	import Params from '$lib/components/Params.svelte';
 	import { CAR_DIMENSIONS, RATIO } from '$lib/const';
@@ -9,7 +9,7 @@
 	import { Application, Container, Graphics, type ColorSource } from 'pixi.js';
 	import { onDestroy } from 'svelte';
 
-	$: sim = simulator($params, honda);
+	$: sim = simulator($params, withdmin(honda));
 
 	const MAX_TICK = 10e5;
 	let speed = 1;
@@ -93,7 +93,8 @@
 			dw_hit: value.dw_hit,
 			headway: value.headway,
 			ave_headway: value.ave_headway,
-			mttc: value.mttc
+			mttc: value.mttc,
+			FV: value.FV
 		};
 
 		marker.x = (value.LV.x - value.dw) * RATIO.px_per_m;
@@ -119,6 +120,7 @@
 		{#if typeof gauges != 'undefined'}
 			<h4>Current Headway: {gauges.headway}</h4>
 			<h4>Average Headway: {gauges.ave_headway}</h4>
+			<h4>Following car Average velocity: {gauges.FV?.ave_vx * RATIO.kph_per_mps}</h4>
 			<h4>Warning Distance ({gauges.dw_hit ? 'Hit' : 'No Hit'}): {gauges.dw}</h4>
 			<h4>MTTC: {gauges.mttc}</h4>
 		{/if}
