@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { pixiCanvas } from '$lib/actions/pixiCanvas';
-	import { honda, withdmin } from '$lib/algorithms';
+	import { hirstgraham, honda, withdmin } from '$lib/algorithms';
+	import { assert } from '$lib/assert';
 	import { COLORS } from '$lib/colors';
 	import Params from '$lib/components/Params.svelte';
 	import { CAR_DIMENSIONS, RATIO } from '$lib/const';
@@ -9,10 +10,14 @@
 	import { Application, Container, Graphics, type ColorSource } from 'pixi.js';
 	import { onDestroy } from 'svelte';
 
-	$: sim = simulator($params, withdmin(honda));
+	$: sim = createSimulator();
 
 	const MAX_TICK = 10e5;
 	let speed = 1;
+	
+	function createSimulator() {
+		return simulator($params, hirstgraham)
+	}
 
 	const app = new Application<HTMLCanvasElement>({
 		width: 1366,
@@ -76,6 +81,8 @@
 	}
 
 	function render() {
+		if (!isRendererRunning) return;
+
 		const { value, done } = sim.next();
 		if (done) return;
 		// Halt simulator on out of bounds
@@ -98,15 +105,34 @@
 		};
 
 		marker.x = (value.LV.x - value.dw) * RATIO.px_per_m;
-
+		
 		requestAnimationFrame(() => setTimeout(render, 1000 / ($params.Sim.tps * speed)));
+	}
+
+	function start() {
+		isRendererRunning = true;
+		requestAnimationFrame(render);
+	}
+
+	function stop() {
+		isRendererRunning = false
+	}
+
+	function reset() {
+		sim = createSimulator();
+		isRendererRunning = false;
+		gauges = undefined;
+		FV.x = 0;
+		LV.x = 0;
+		marker.x = 0;
 	}
 
 	onDestroy(function () {
 		app.destroy(false, { children: true });
 	});
 
-	let gauges: Partial<State>;
+	let isRendererRunning = false
+	let gauges: Partial<State> | undefined;
 </script>
 
 <main>
@@ -114,8 +140,16 @@
 		<div use:pixiCanvas={app.view} />
 		<span class="flex">
 			<label for="speed">{speed}x</label>
-			<input name="speed" type="range" min="0.25" max="2" step="0.25" bind:value={speed} />
-			<button on:click={() => requestAnimationFrame(render)}>Start</button>
+			<input name="speed" type="range" min="0.25" max="3" step="0.25" bind:value={speed} />
+
+			{#if isRendererRunning}
+				<button on:click={stop}>Stop</button>
+			{:else}
+				<button on:click={start}>Start</button>
+			{/if}
+			
+			<button on:click={reset}>Reset</button>
+			
 		</span>
 		{#if typeof gauges != 'undefined'}
 			<h4>Current Headway: {gauges.headway}</h4>
