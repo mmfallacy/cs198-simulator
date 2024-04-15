@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { pixiCanvas } from '$lib/actions/pixiCanvas';
-	import { honda, sda } from '$lib/algorithms';
+	import { honda } from '$lib/algorithms';
 	import { COLORS } from '$lib/colors';
 	import Params from '$lib/components/Params.svelte';
 	import { CAR_DIMENSIONS, RATIO } from '$lib/const';
@@ -92,6 +92,7 @@
 			dw: value.dw,
 			dw_hit: value.dw_hit,
 			headway: value.headway,
+			ave_headway: value.ave_headway,
 			mttc: value.mttc
 		};
 
@@ -116,7 +117,8 @@
 			<button on:click={() => requestAnimationFrame(render)}>Start</button>
 		</span>
 		{#if typeof gauges != 'undefined'}
-			<h4>Headway: {gauges.headway}</h4>
+			<h4>Current Headway: {gauges.headway}</h4>
+			<h4>Average Headway: {gauges.ave_headway}</h4>
 			<h4>Warning Distance ({gauges.dw_hit ? 'Hit' : 'No Hit'}): {gauges.dw}</h4>
 			<h4>MTTC: {gauges.mttc}</h4>
 		{/if}

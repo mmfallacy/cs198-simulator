@@ -17,6 +17,7 @@ export interface State {
 	dw: number;
 	dw_hit: boolean;
 	headway: number;
+	ave_headway: number;
 	mttc: number;
 }
 
@@ -66,6 +67,7 @@ export function* simulator(params: ParameterInput, fcwa: Algorithm) {
 		dw: 0,
 		dw_hit: false,
 		headway: Number.NEGATIVE_INFINITY,
+		ave_headway: 0,
 		mttc: Number.NEGATIVE_INFINITY
 	};
 
@@ -82,6 +84,8 @@ export function* simulator(params: ParameterInput, fcwa: Algorithm) {
 		state.dw = fcwa(adapter(FV, LV, params.Sim));
 
 		state.headway = distance(state.FV, state.LV);
+
+		state.ave_headway += (state.headway - state.ave_headway) / state.tick;
 
 		state.mttc = mttc(FV, LV);
 
