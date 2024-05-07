@@ -16,16 +16,16 @@
 
 	// Reset on parameter change
 	$: {
-		$params
-		reset()
+		$params;
+		reset();
 	}
 
 	const MAX_TICK = 10e5;
 	let speed = 1;
-	
+
 	function createSimulator() {
-		assert(v.is(SimParameterSchema.entries.algo, $params.Sim.algo))
-		return simulator($params, Algorithms[$params.Sim.algo])
+		assert(v.is(SimParameterSchema.entries.algo, $params.Sim.algo));
+		return simulator($params, Algorithms[$params.Sim.algo]);
 	}
 
 	const app = new Application<HTMLCanvasElement>({
@@ -89,44 +89,69 @@
 		console.groupEnd();
 	}
 
-	function render() {
-		if (!isRendererRunning) return;
+	function initializeRenderer() {
+		let quarterSkip = 0;
+		function shouldSkip(step: number) {
+			quarterSkip += step;
+			if (quarterSkip >= 1) {
+				quarterSkip -= 1;
+				return true;
+			}
+			return false;
+		}
 
-		const { value, done } = sim.next();
-		if (done) return;
-		// Halt simulator on out of bounds
-		if (value.FV.x > app.screen.width) return;
-		if (value.tick > MAX_TICK) return;
-		if (value.FV.x * RATIO.px_per_m > app.screen.width) return;
+		function render() {
+			if (!isRendererRunning) return;
 
-		log(value);
+			// Handling speed.
+			const speedup = Math.max(speed, 1); // on slider input > 1, only render every nth tick.
+			const residual = speedup % 1; // account for 0 < n < 1 speed increments. skip only every time > 1.
+			const slowdown = Math.min(speed, 1); // on slider input < 1, lengthen timeout.
 
-		FV.x = value.FV.x * RATIO.px_per_m;
-		LV.x = value.LV.x * RATIO.px_per_m;
+			for (let i = 0; i < Math.floor(speedup); i++) sim.next();
+			if (shouldSkip(residual)) sim.next();
 
-		gauges = {
-			dw: value.dw,
-			dw_hit: value.dw_hit,
-			headway: value.headway,
-			ave_headway: value.ave_headway,
-			mttc: value.mttc,
-			FV: value.FV
-		};
+			// Get state information.
+			const { value, done } = sim.next();
+			if (done) return;
 
-		if(typeof first_mttc==='undefined' && value.dw_hit) first_mttc = value.mttc
+			// Halt simulator on out of bounds
+			if (value.FV.x > app.screen.width) return;
+			if (value.tick > MAX_TICK) return;
+			if (value.FV.x * RATIO.px_per_m > app.screen.width) return;
 
-		marker.x = (value.LV.x - value.dw) * RATIO.px_per_m;
-		
-		requestAnimationFrame(() => setTimeout(render, 1000 / ($params.Sim.tps * speed)));
+			// Update screen.
+			log(value);
+
+			FV.x = value.FV.x * RATIO.px_per_m;
+			LV.x = value.LV.x * RATIO.px_per_m;
+			marker.x = (value.LV.x - value.dw) * RATIO.px_per_m;
+
+			// Update gauges
+			gauges = {
+				dw: value.dw,
+				dw_hit: value.dw_hit,
+				headway: value.headway,
+				ave_headway: value.ave_headway,
+				mttc: value.mttc,
+				FV: value.FV
+			};
+
+			if (typeof first_mttc === 'undefined' && value.dw_hit) first_mttc = value.mttc;
+
+			// Set longer timeouts when speed < 1;
+			requestAnimationFrame(() => setTimeout(render, 1000 / ($params.Sim.tps * slowdown)));
+		}
+		return render;
 	}
 
 	function start() {
 		isRendererRunning = true;
-		requestAnimationFrame(render);
+		requestAnimationFrame(initializeRenderer());
 	}
 
 	function stop() {
-		isRendererRunning = false
+		isRendererRunning = false;
 	}
 
 	function reset() {
@@ -143,7 +168,7 @@
 		app.destroy(false, { children: true });
 	});
 
-	let isRendererRunning = false
+	let isRendererRunning = false;
 	let gauges: Partial<State> | undefined;
 	let first_mttc: State['mttc'] | undefined = undefined;
 </script>
@@ -160,9 +185,8 @@
 			{:else}
 				<button on:click={start}>Start</button>
 			{/if}
-			
+
 			<button on:click={reset}>Reset</button>
-			
 		</span>
 		{#if typeof gauges != 'undefined'}
 			<h4>Current Headway: {gauges.headway}</h4>
