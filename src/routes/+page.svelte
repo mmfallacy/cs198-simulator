@@ -113,6 +113,8 @@
 			FV: value.FV
 		};
 
+		if(typeof first_mttc==='undefined' && value.dw_hit) first_mttc = value.mttc
+
 		marker.x = (value.LV.x - value.dw) * RATIO.px_per_m;
 		
 		requestAnimationFrame(() => setTimeout(render, 1000 / ($params.Sim.tps * speed)));
@@ -131,6 +133,7 @@
 		sim = createSimulator();
 		isRendererRunning = false;
 		gauges = undefined;
+		first_mttc = undefined;
 		FV.x = 0;
 		LV.x = 0;
 		marker.x = 0;
@@ -142,6 +145,7 @@
 
 	let isRendererRunning = false
 	let gauges: Partial<State> | undefined;
+	let first_mttc: State['mttc'] | undefined = undefined;
 </script>
 
 <main>
@@ -167,7 +171,8 @@
 				<h4>Following car Average velocity: {gauges.FV.ave_vx * RATIO.kph_per_mps}</h4>
 			{/if}
 			<h4>Warning Distance ({gauges.dw_hit ? 'Hit' : 'No Hit'}): {gauges.dw}</h4>
-			<h4>MTTC: {gauges.mttc}</h4>
+			<h4>Current MTTC: {gauges.mttc}</h4>
+			<h4>MTTC on first warning distance hit: {first_mttc ?? 'not yet hit'}</h4>
 		{/if}
 	</section>
 	<section class="params">
