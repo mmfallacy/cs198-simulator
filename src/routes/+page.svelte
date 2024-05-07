@@ -12,6 +12,12 @@
 
 	$: sim = createSimulator();
 
+	// Reset on parameter change
+	$: {
+		$params
+		reset()
+	}
+
 	const MAX_TICK = 10e5;
 	let speed = 1;
 	
