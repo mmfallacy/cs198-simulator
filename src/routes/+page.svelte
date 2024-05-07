@@ -4,11 +4,13 @@
 	import { assert } from '$lib/assert';
 	import { COLORS } from '$lib/colors';
 	import Params from '$lib/components/Params.svelte';
-	import { CAR_DIMENSIONS, RATIO } from '$lib/const';
+	import { Algorithms, CAR_DIMENSIONS, RATIO } from '$lib/const';
 	import { simulator, type State } from '$lib/simulator';
 	import { ParameterStore as params } from '$lib/stores/parameter/ParameterStore';
+	import { SimParameterSchema } from '$lib/stores/parameter/types';
 	import { Application, Container, Graphics, type ColorSource } from 'pixi.js';
 	import { onDestroy } from 'svelte';
+	import * as v from 'valibot';
 
 	$: sim = createSimulator();
 
@@ -22,7 +24,8 @@
 	let speed = 1;
 	
 	function createSimulator() {
-		return simulator($params, hirstgraham)
+		assert(v.is(SimParameterSchema.entries.algo, $params.Sim.algo))
+		return simulator($params, Algorithms[$params.Sim.algo])
 	}
 
 	const app = new Application<HTMLCanvasElement>({

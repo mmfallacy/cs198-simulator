@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { ParameterStore as params } from '$lib/stores/parameter/ParameterStore';
+	import { Algorithms } from '$lib/const';
+import { ParameterStore as params } from '$lib/stores/parameter/ParameterStore';
 </script>
 
 <h2>Following Vehicle (FV):</h2>
@@ -25,5 +26,11 @@
 <input type="number" bind:value={$params.Sim.dmin} />
 <h4>Initial distance between FV and LV</h4>
 <input type="number" bind:value={$params.Sim.id} />
+<h4>Forward Collision Warning Algorithm</h4>
+<select bind:value={$params.Sim.algo}>
+	{#each Object.keys(Algorithms) as algo}
+		<option value={algo}>{algo}</option>
+	{/each}
+</select>
 <!-- <h4>Number of test runs</h4>
 <input type="number" bind:value={$params.Sim.N} /> -->
