@@ -18,7 +18,8 @@ const initialParameters: ParameterInput = {
 		dmin: 1,
 		id: 1,
 		N: 0,
-		tps: 120
+		tps: 120,
+		algo: 'honda'
 	}
 } as const;
 

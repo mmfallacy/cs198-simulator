@@ -1,3 +1,4 @@
+import { Algorithms } from '$lib/const';
 import * as v from 'valibot';
 
 export const CarParameterSchema = v.object({
@@ -21,7 +22,9 @@ export const SimParameterSchema = v.object({
 	// Test runs (positive integer),
 	N: v.number([v.minValue(0), v.integer()]),
 	// Ticks per second,
-	tps: v.number([v.minValue(0), v.integer()])
+	tps: v.number([v.minValue(0), v.integer()]),
+	// FCWS Algorithm used,
+	algo: v.picklist(Object.keys(Algorithms) as Array<keyof typeof Algorithms>)
 });
 
 export const ParameterSchema = v.object({
