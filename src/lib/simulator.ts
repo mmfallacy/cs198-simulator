@@ -20,6 +20,7 @@ export interface State {
 	headway: number;
 	ave_headway: number;
 	mttc: number;
+	first_mttc: number | undefined;
 }
 
 function adapter(FV: Car, LV: Car, Sim: SimParameterInput): AlgorithmInputs {
@@ -71,7 +72,8 @@ export function* simulator(params: ParameterInput, fcwa: Algorithm) {
 		dw_hit: false,
 		headway: Number.NEGATIVE_INFINITY,
 		ave_headway: 0,
-		mttc: Number.NEGATIVE_INFINITY
+		mttc: Number.NEGATIVE_INFINITY,
+		first_mttc: undefined
 	};
 
 	const spt = 1 / params.Sim.tps;
@@ -102,6 +104,9 @@ export function* simulator(params: ParameterInput, fcwa: Algorithm) {
 			state.FV.vx += state.FV.ax * spt;
 			state.dw_hit = false;
 		}
+
+		// Store mttc on first hit
+		if (state.dw_hit && typeof state.first_mttc === 'undefined') state.first_mttc = state.mttc;
 
 		// Compute continuous average velocities for both cars.
 		state.FV.ave_vx += (state.FV.vx - state.FV.ave_vx) / state.tick;

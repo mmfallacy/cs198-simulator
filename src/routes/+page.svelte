@@ -134,10 +134,9 @@
 				headway: value.headway,
 				ave_headway: value.ave_headway,
 				mttc: value.mttc,
+				first_mttc: value.first_mttc,
 				FV: value.FV
 			};
-
-			if (typeof first_mttc === 'undefined' && value.dw_hit) first_mttc = value.mttc;
 
 			// Set longer timeouts when speed < 1;
 			requestAnimationFrame(() => setTimeout(render, 1000 / ($params.Sim.tps * slowdown)));
@@ -158,7 +157,6 @@
 		sim = createSimulator();
 		isRendererRunning = false;
 		gauges = undefined;
-		first_mttc = undefined;
 		FV.x = 0;
 		LV.x = 0;
 		marker.x = 0;
@@ -170,7 +168,6 @@
 
 	let isRendererRunning = false;
 	let gauges: Partial<State> | undefined;
-	let first_mttc: State['mttc'] | undefined = undefined;
 </script>
 
 <main>
@@ -196,7 +193,7 @@
 			{/if}
 			<h4>Warning Distance ({gauges.dw_hit ? 'Hit' : 'No Hit'}): {gauges.dw}</h4>
 			<h4>Current MTTC: {gauges.mttc}</h4>
-			<h4>MTTC on first warning distance hit: {first_mttc ?? 'not yet hit'}</h4>
+			<h4>MTTC on first warning distance hit: {gauges.first_mttc ?? 'not yet hit'}</h4>
 		{/if}
 	</section>
 	<section class="params">
