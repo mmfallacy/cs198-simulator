@@ -12,14 +12,6 @@
 	import { onDestroy } from 'svelte';
 	import * as v from 'valibot';
 
-	$: sim = createSimulator();
-
-	// Reset on parameter change
-	$: {
-		$params;
-		reset();
-	}
-
 	const MAX_TICK = 10e5;
 	let speed = 1;
 
@@ -27,6 +19,11 @@
 		assert(v.is(SimParameterSchema.entries.algo, $params.Sim.algo));
 		return simulator($params, Algorithms[$params.Sim.algo]);
 	}
+
+	let sim = createSimulator();
+
+	let isRendererRunning = false;
+	let state: Readonly<State> | undefined = undefined;
 
 	const app = new Application<HTMLCanvasElement>({
 		width: 1366,
@@ -82,16 +79,8 @@
 			LV.x = value.LV.x * RATIO.px_per_m;
 			marker.x = (value.LV.x - value.dw) * RATIO.px_per_m;
 
-			// Update gauges
-			gauges = {
-				dw: value.dw,
-				dw_hit: value.dw_hit,
-				headway: value.headway,
-				ave_headway: value.ave_headway,
-				mttc: value.mttc,
-				first_mttc: value.first_mttc,
-				FV: value.FV
-			};
+			// Store state for displaying
+			state = value;
 
 			// Set longer timeouts when speed < 1;
 			requestAnimationFrame(() => setTimeout(render, 1000 / ($params.Sim.tps * slowdown)));
@@ -111,18 +100,21 @@
 	function reset() {
 		sim = createSimulator();
 		isRendererRunning = false;
-		gauges = undefined;
+		state = undefined;
 		FV.x = 0;
 		LV.x = 0;
 		marker.x = 0;
 	}
 
+	// Reset on parameter change
+	$: {
+		$params;
+		reset();
+	}
+
 	onDestroy(function () {
 		app.destroy(false, { children: true });
 	});
-
-	let isRendererRunning = false;
-	let gauges: Partial<State> | undefined;
 </script>
 
 <main>
@@ -140,15 +132,15 @@
 
 			<button on:click={reset}>Reset</button>
 		</span>
-		{#if typeof gauges != 'undefined'}
-			<h4>Current Headway: {gauges.headway}</h4>
-			<h4>Average Headway: {gauges.ave_headway}</h4>
-			{#if typeof gauges.FV != 'undefined'}
-				<h4>Following car Average velocity: {gauges.FV.ave_vx * RATIO.kph_per_mps}</h4>
+		{#if typeof state != 'undefined'}
+			<h4>Current Headway: {state.headway}</h4>
+			<h4>Average Headway: {state.ave_headway}</h4>
+			{#if typeof state.FV != 'undefined'}
+				<h4>Following car Average velocity: {state.FV.ave_vx * RATIO.kph_per_mps}</h4>
 			{/if}
-			<h4>Warning Distance ({gauges.dw_hit ? 'Hit' : 'No Hit'}): {gauges.dw}</h4>
-			<h4>Current MTTC: {gauges.mttc}</h4>
-			<h4>MTTC on first warning distance hit: {gauges.first_mttc ?? 'not yet hit'}</h4>
+			<h4>Warning Distance ({state.dw_hit ? 'Hit' : 'No Hit'}): {state.dw}</h4>
+			<h4>Current MTTC: {state.mttc}</h4>
+			<h4>MTTC on first warning distance hit: {state.first_mttc ?? 'not yet hit'}</h4>
 		{/if}
 	</section>
 	<section class="params">
