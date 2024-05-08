@@ -1,14 +1,14 @@
 <script lang="ts">
 	import { pixiCanvas } from '$lib/actions/pixiCanvas';
-	import { hirstgraham, honda, withdmin } from '$lib/algorithms';
 	import { assert } from '$lib/assert';
 	import { COLORS } from '$lib/colors';
 	import Params from '$lib/components/Params.svelte';
-	import { Algorithms, CAR_DIMENSIONS, RATIO } from '$lib/const';
+	import { Algorithms, RATIO } from '$lib/const';
+	import { addToCenter, createMarker, createRoad, createVehicle } from '$lib/rendererUtils';
 	import { simulator, type State } from '$lib/simulator';
 	import { ParameterStore as params } from '$lib/stores/parameter/ParameterStore';
 	import { SimParameterSchema } from '$lib/stores/parameter/types';
-	import { Application, Container, Graphics, type ColorSource } from 'pixi.js';
+	import { Application } from 'pixi.js';
 	import { onDestroy } from 'svelte';
 	import * as v from 'valibot';
 
@@ -33,39 +33,6 @@
 		height: 383
 	});
 
-	function createRoad(h: number, w: number) {
-		const road = new Graphics();
-		road.beginFill(COLORS.NEUTRAL[900]);
-		road.drawRect(0, 0, w, h);
-		road.endFill();
-		return road;
-	}
-
-	function createVehicle(fill: ColorSource) {
-		const car = new Graphics();
-		car.beginFill(fill);
-		car.drawRect(0, 0, CAR_DIMENSIONS.w, CAR_DIMENSIONS.h);
-		car.endFill();
-
-		return car;
-	}
-
-	function createMarker(fill: ColorSource) {
-		const marker = new Graphics();
-		marker.beginFill(fill);
-		marker.drawRect(0, 0, 2, CAR_DIMENSIONS.h - 10);
-		marker.endFill();
-
-		return marker;
-	}
-
-	function addToCenter(parent: Container, child: Graphics, x: boolean = false, y: boolean = true) {
-		if (x) child.x = (parent.width - child.width) / 2;
-		if (y) child.y = (parent.height - child.height) / 2;
-
-		parent.addChild(child);
-	}
-
 	const road = createRoad(90, app.screen.width);
 	road.y = (app.screen.height - road.height) / 2;
 	app.stage.addChild(road);
@@ -77,17 +44,6 @@
 	addToCenter(road, FV);
 	addToCenter(road, LV);
 	addToCenter(road, marker);
-
-	function log(val: State) {
-		const { FV, LV, tick, dw } = val;
-
-		console.group(`${tick} - (${dw})`);
-		console.info('FV');
-		console.table({ ...FV, pxx: FV.x * RATIO.px_per_m });
-		console.info('LV');
-		console.table({ ...LV, pxx: LV.x * RATIO.px_per_m });
-		console.groupEnd();
-	}
 
 	function initializeRenderer() {
 		let quarterSkip = 0;
@@ -121,7 +77,6 @@
 			if (value.FV.x * RATIO.px_per_m > app.screen.width) return;
 
 			// Update screen.
-			log(value);
 
 			FV.x = value.FV.x * RATIO.px_per_m;
 			LV.x = value.LV.x * RATIO.px_per_m;
