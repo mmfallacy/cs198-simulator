@@ -8,6 +8,7 @@
 	import { simulator, type State } from '$lib/simulator';
 	import { ParameterStore as params } from '$lib/stores/parameter/ParameterStore';
 	import { SimParameterSchema } from '$lib/stores/parameter/types';
+	import type { DeepReadonly } from '$lib/utils';
 	import { Application } from 'pixi.js';
 	import { onDestroy } from 'svelte';
 	import * as v from 'valibot';
@@ -23,7 +24,7 @@
 	let sim = createSimulator();
 
 	let isRendererRunning = false;
-	let state: Readonly<State> | undefined = undefined;
+	let state: DeepReadonly<State> | undefined = undefined;
 
 	const app = new Application<HTMLCanvasElement>({
 		width: 1366,
