@@ -30,7 +30,7 @@
 
 	const app = new Application<HTMLCanvasElement>({
 		width: 1366,
-		height: 768
+		height: 383
 	});
 
 	function createRoad(h: number, w: number) {
