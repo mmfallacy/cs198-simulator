@@ -3,7 +3,7 @@
 	import { assert } from '$lib/assert';
 	import { COLORS } from '$lib/colors';
 	import Params from '$lib/components/Params.svelte';
-	import { Algorithms, RATIO } from '$lib/const';
+	import { Algorithms, MAX_TICK, RATIO } from '$lib/const';
 	import { addToCenter, createMarker, createRoad, createVehicle } from '$lib/rendererUtils';
 	import { simulator, type State } from '$lib/simulator';
 	import { ParameterStore as params } from '$lib/stores/parameter/ParameterStore';
@@ -13,7 +13,6 @@
 	import { onDestroy } from 'svelte';
 	import * as v from 'valibot';
 
-	const MAX_TICK = 10e5;
 	let speed = 1;
 
 	function createSimulator() {

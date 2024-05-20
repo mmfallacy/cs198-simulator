@@ -17,3 +17,5 @@ export const Algorithms = {
 	wd_hirstgraham: withdmin(hirstgraham),
 	wd_bellarusso: withdmin(bellarusso)
 } as const;
+
+export const MAX_TICK = 10e5;
