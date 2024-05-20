@@ -1,7 +1,7 @@
 import { writable } from 'svelte/store';
 import type { ParameterInput } from './types';
 
-const initialParameters: ParameterInput = {
+export const initialParameters: ParameterInput = {
 	FV: {
 		vx: 10,
 		abr: -5,
