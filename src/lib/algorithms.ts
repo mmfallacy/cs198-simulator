@@ -22,7 +22,7 @@ export const mazda: Algorithm = (inputs) => {
 
 export const honda: Algorithm = (inputs) => {
 	const { vf, vl } = inputs;
-	return 2.2 * (vf - vl);
+	return 2.2 * (vf - vl) + 6.2;
 };
 
 export const hirstgraham: Algorithm = (inputs) => {
