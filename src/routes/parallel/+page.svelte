@@ -8,6 +8,7 @@
 	type RunnerParams = {
 		maxDistanceInMeters?: number;
 		maxDistanceInPx?: number;
+		maxElapsedTimeInSeconds?: number;
 		maxSeconds?: number;
 		maxTicks?: number;
 	};
@@ -23,7 +24,10 @@
 	) {
 		const sim = simulator(simParams, fcwa);
 
-		const { maxDistanceInMeters, maxDistanceInPx, maxSeconds, maxTicks } = params;
+		let startTime = performance.now();
+
+		const { maxDistanceInMeters, maxDistanceInPx, maxElapsedTimeInSeconds, maxSeconds, maxTicks } =
+			params;
 
 		while (true) {
 			const { value, done } = sim.next();
@@ -40,6 +44,14 @@
 			if (!isUndefined(maxSeconds) && value.tick / simParams.Sim.tps >= maxSeconds) return value;
 
 			if (!isUndefined(maxTicks) && value.tick >= maxTicks) return value;
+
+			if (
+				!isUndefined(maxElapsedTimeInSeconds) &&
+				performance.now() - startTime >= maxElapsedTimeInSeconds * 1000
+			) {
+				console.log(performance.now() - startTime);
+				return value;
+			}
 		}
 	}
 
@@ -48,21 +60,28 @@
 			runner(initialParameters, Algorithms['honda'], { maxDistanceInMeters: 500 }),
 			runner(initialParameters, Algorithms['hirstgraham'], { maxDistanceInMeters: 500 }),
 			runner(initialParameters, Algorithms['bellarusso'], { maxDistanceInMeters: 500 }),
-
+			new Promise((_, reject) => reject()),
 			runner(initialParameters, Algorithms['honda'], { maxDistanceInPx: 720 }),
 			runner(initialParameters, Algorithms['hirstgraham'], { maxDistanceInPx: 720 }),
 			runner(initialParameters, Algorithms['bellarusso'], { maxDistanceInPx: 720 }),
-
+			new Promise((_, reject) => reject()),
 			runner(initialParameters, Algorithms['honda'], { maxTicks: 500 }),
 			runner(initialParameters, Algorithms['hirstgraham'], { maxTicks: 500 }),
 			runner(initialParameters, Algorithms['bellarusso'], { maxTicks: 500 }),
-
+			new Promise((_, reject) => reject()),
 			runner(initialParameters, Algorithms['honda'], { maxSeconds: 5 }),
 			runner(initialParameters, Algorithms['hirstgraham'], { maxSeconds: 5 }),
 			runner(initialParameters, Algorithms['bellarusso'], { maxSeconds: 5 })
 		]);
 
 		console.log(results);
+		console.log('awaiting elapsed time');
+		const nextresults = await Promise.allSettled([
+			runner(initialParameters, Algorithms['honda'], { maxElapsedTimeInSeconds: 5 }),
+			runner(initialParameters, Algorithms['hirstgraham'], { maxElapsedTimeInSeconds: 5 }),
+			runner(initialParameters, Algorithms['bellarusso'], { maxElapsedTimeInSeconds: 5 })
+		]);
+		console.log(nextresults);
 	}
 </script>
 
