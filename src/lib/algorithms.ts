@@ -10,6 +10,11 @@ export type AlgorithmInputs = {
 	dmin: number;
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const nofcwa: Algorithm = (inputs) => {
+	return 0;
+};
+
 export const sda: Algorithm = (inputs) => {
 	const { vf, af, vl, al, tr } = inputs;
 	return vf * tr + (vf * vf) / (2 * af) - (vl * vl) / (2 * al);
