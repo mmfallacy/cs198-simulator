@@ -1,27 +1,8 @@
-import type { AlgorithmInputs, Algorithm } from './algorithms';
-import { CAR_DIMENSIONS, RATIO } from './const';
-import type { ParameterInput, SimParameterInput } from './stores/parameter/types';
-import { quadrealroot } from './utils';
-
-export interface Car {
-	x: number;
-	vx: number;
-	ave_vx: number;
-	ax: number;
-	abr: number;
-}
-
-export interface State {
-	FV: Car;
-	LV: Car;
-	tick: number;
-	dw: number;
-	dw_hit: boolean;
-	headway: number;
-	ave_headway: number;
-	mttc: number;
-	first_mttc: number | undefined;
-}
+import { type Car, type State } from './types';
+import type { AlgorithmInputs, Algorithm } from '../algorithms';
+import { CAR_DIMENSIONS, RATIO } from '../const';
+import type { ParameterInput, SimParameterInput } from '../stores/parameter/types';
+import { quadrealroot } from '../utils';
 
 function adapter(FV: Car, LV: Car, Sim: SimParameterInput): AlgorithmInputs {
 	return {

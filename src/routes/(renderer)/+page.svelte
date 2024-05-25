@@ -5,7 +5,8 @@
 	import Params from '$lib/components/Params.svelte';
 	import { Algorithms, MAX_TICK, RATIO } from '$lib/const';
 	import { addToCenter, createMarker, createRoad, createVehicle } from '$lib/rendererUtils';
-	import { simulator, type State } from '$lib/simulator';
+	import { simulator } from '$lib/simulator/simulator';
+	import { type State } from '$lib/simulator/types';
 	import { ParameterStore as params } from '$lib/stores/parameter/ParameterStore';
 	import { SimParameterSchema } from '$lib/stores/parameter/types';
 	import type { DeepReadonly } from '$lib/utils';
