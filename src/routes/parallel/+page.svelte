@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { ParameterInput } from '$lib/stores/parameter/types';
-	import { simulator } from '$lib/simulator';
+	import { simulator } from '$lib/simulator/simulator';
 	import type { Algorithm } from '$lib/algorithms';
 	import { Algorithms, CAR_DIMENSIONS, MAX_TICK, RATIO } from '$lib/const';
 	import { initialParameters } from '$lib/stores/parameter/ParameterStore';
