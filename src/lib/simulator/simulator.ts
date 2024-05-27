@@ -31,16 +31,16 @@ function mttc(FV: Car, LV: Car) {
 export function* simulator(params: ParameterInput, fcwa: Algorithm) {
 	const FV: Car = {
 		x: 0, // in meters
-		vx: params.FV.vx / RATIO.kph_per_mps, // in mps (from kph)
-		ave_vx: params.FV.vx / RATIO.kph_per_mps, // average vx in mps
+		vx: params.FV.vx, // in mps
+		ave_vx: params.FV.vx, // average vx in mps
 		ax: params.FV.ax, // in mps^2
 		abr: params.FV.abr // in mps^2
 	};
 
 	const LV: Car = {
 		x: params.Sim.id + CAR_W_METER, // in meters
-		vx: params.LV.vx / RATIO.kph_per_mps, // in mps (from kph)
-		ave_vx: params.LV.vx / RATIO.kph_per_mps, // average vx in mps
+		vx: params.LV.vx, // in mps
+		ave_vx: params.LV.vx, // average vx in mps
 		ax: params.LV.ax, // in mps^2
 		abr: params.LV.abr // in mps^2
 	};

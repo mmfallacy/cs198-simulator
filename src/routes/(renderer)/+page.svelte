@@ -137,7 +137,7 @@
 			<h4>Current Headway: {state.headway}</h4>
 			<h4>Average Headway: {state.ave_headway}</h4>
 			{#if typeof state.FV != 'undefined'}
-				<h4>Following car Average velocity: {state.FV.ave_vx * RATIO.kph_per_mps}</h4>
+				<h4>Following car Average velocity (mps): {state.FV.ave_vx}</h4>
 			{/if}
 			<h4>Warning Distance ({state.dw_hit ? 'Hit' : 'No Hit'}): {state.dw}</h4>
 			<h4>Current MTTC: {state.mttc}</h4>

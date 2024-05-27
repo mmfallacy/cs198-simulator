@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { Algorithms } from '$lib/const';
-import { ParameterStore as params } from '$lib/stores/parameter/ParameterStore';
+	import { ParameterStore as params } from '$lib/stores/parameter/ParameterStore';
 </script>
 
 <h2>Following Vehicle (FV):</h2>
-<h4>Initial Velocity (+ km/h)</h4>
+<h4>Initial Velocity (+ mps)</h4>
 <input type="number" bind:value={$params.FV.vx} />
 <h4>Acceleration due to braking (- mps^2)</h4>
 <input type="number" bind:value={$params.FV.abr} />
@@ -12,7 +12,7 @@ import { ParameterStore as params } from '$lib/stores/parameter/ParameterStore';
 <input type="number" bind:value={$params.FV.ax} />
 
 <h2>Leading Vehicle (LV):</h2>
-<h4>Initial Velocity (+ km/h)</h4>
+<h4>Initial Velocity (+ mps)</h4>
 <input type="number" bind:value={$params.LV.vx} />
 <!-- <h4>Acceleration due to braking (- km/h^2)</h4>
 <input type="number" bind:value={$params.LV.abr} /> -->
