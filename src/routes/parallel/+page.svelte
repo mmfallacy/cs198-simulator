@@ -1,40 +1,38 @@
 <script lang="ts">
+	import { type WorkerAction } from '$lib/worker/types';
+	import Task from '$lib/components/Task.svelte';
 	import { initialParameters } from '$lib/stores/parameter/ParameterStore';
-	import { createWorkerAndRun } from '$lib/worker/utils';
 
-	function start() {
-		console.log('creating three parallel runners for 5 seconds');
-
-		createWorkerAndRun({
+	const tasks: Array<WorkerAction> = [
+		{
 			simParams: initialParameters,
 			fcwaKey: 'honda',
 			params: {
-				maxElapsedTimeInSeconds: 5
+				maxDistanceInMeters: 500
 			}
-		})
-			.then(console.log)
-			.catch(console.error);
+		},
 
-		createWorkerAndRun({
+		{
 			simParams: initialParameters,
-			fcwaKey: 'honda',
+			fcwaKey: 'hirstgraham',
 			params: {
-				maxElapsedTimeInSeconds: 5
+				maxDistanceInMeters: 500
 			}
-		})
-			.then(console.log)
-			.catch(console.error);
+		},
 
-		createWorkerAndRun({
+		{
 			simParams: initialParameters,
-			fcwaKey: 'honda',
+			fcwaKey: 'bellarusso',
 			params: {
-				maxElapsedTimeInSeconds: 5
+				maxDistanceInMeters: 500
 			}
-		})
-			.then(console.log)
-			.catch(console.error);
-	}
+		}
+	];
 </script>
 
-<button on:click={start}> Start </button>
+Results:
+<div class="flex flex-col gap-2">
+	{#each tasks as task}
+		<Task workerAction={task} />
+	{/each}
+</div>
