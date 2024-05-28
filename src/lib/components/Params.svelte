@@ -1,6 +1,25 @@
 <script lang="ts">
 	import { Algorithms } from '$lib/const';
 	import { ParameterStore as params } from '$lib/stores/parameter/ParameterStore';
+	import type { ParameterInput } from '$lib/stores/parameter/types';
+
+	let isWarningInitial = true;
+
+	$: console.log(isWarningInitial);
+
+	function adapter(params: ParameterInput) {
+		return {
+			vf: params.FV.vx,
+			af: params.FV.abr,
+			vl: params.LV.vx,
+			al: params.LV.abr,
+			tr: params.Sim.tr,
+			ts: params.Sim.ts,
+			dmin: params.Sim.dmin
+		};
+	}
+
+	$: if (isWarningInitial) $params.Sim.id = Algorithms[$params.Sim.algo](adapter($params));
 </script>
 
 <h2>Following Vehicle (FV):</h2>
@@ -25,7 +44,9 @@
 <h4>Minimum safety distance (m)</h4>
 <input type="number" bind:value={$params.Sim.dmin} />
 <h4>Initial distance between FV and LV</h4>
-<input type="number" bind:value={$params.Sim.id} />
+<input type="number" bind:value={$params.Sim.id} disabled={isWarningInitial} />
+<label class="ml-2" for="usefcwa">Use FCWA</label>
+<input type="checkbox" name="usefcwa" bind:checked={isWarningInitial} />
 <h4>Forward Collision Warning Algorithm</h4>
 <select bind:value={$params.Sim.algo}>
 	{#each Object.keys(Algorithms) as algo}
