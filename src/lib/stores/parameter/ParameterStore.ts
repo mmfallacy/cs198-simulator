@@ -13,10 +13,13 @@ export const initialParameters: ParameterInput = {
 		ax: 0
 	},
 	Sim: {
+		// Unused. Preparation for simulating kinematics fcwa
 		tr: 10,
+		// Unused. Preparation for simulating kinematics fcwa
 		ts: 10,
 		dmin: 1,
 		id: 1,
+		// Unused.
 		N: 0,
 		tps: 120,
 		algo: 'honda'
