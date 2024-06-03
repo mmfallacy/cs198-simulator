@@ -22,6 +22,15 @@ export const WorkerActionSchema = v.object({
 
 export type WorkerAction = v.Input<typeof WorkerActionSchema>;
 
-export const WorkerReturnSchema = StateSchema;
+export const WorkerReturnSchema = v.variant('status', [
+	v.object({
+		status: v.literal('success'),
+		value: StateSchema
+	}),
+	v.object({
+		status: v.literal('error'),
+		message: v.string()
+	})
+]);
 
 export type WorkerReturn = DeepReadonly<v.Input<typeof WorkerReturnSchema>>;
