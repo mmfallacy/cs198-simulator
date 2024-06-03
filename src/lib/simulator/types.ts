@@ -18,7 +18,8 @@ export const StateSchema = v.object({
 	headway: v.number(),
 	ave_headway: v.number(),
 	mttc: v.number(),
-	first_mttc: v.optional(v.number())
+	first_mttc: v.optional(v.number()),
+	collision: v.boolean()
 });
 
 export type State = v.Input<typeof StateSchema>;

@@ -54,7 +54,8 @@ export function* simulator(params: ParameterInput, fcwa: Algorithm) {
 		headway: Number.NEGATIVE_INFINITY,
 		ave_headway: 0,
 		mttc: Number.NEGATIVE_INFINITY,
-		first_mttc: undefined
+		first_mttc: undefined,
+		collision: false
 	};
 
 	const spt = 1 / params.Sim.tps;
@@ -93,7 +94,10 @@ export function* simulator(params: ParameterInput, fcwa: Algorithm) {
 		state.FV.ave_vx += (state.FV.vx - state.FV.ave_vx) / state.tick;
 		state.LV.ave_vx += (state.LV.vx - state.LV.ave_vx) / state.tick;
 
-		if (state.headway <= 0) return;
+		if (state.headway <= 0) {
+			state.collision = true;
+			return state;
+		}
 		yield state;
 	}
 }
