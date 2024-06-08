@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { type WorkerAction } from '$lib/worker/types';
-	import Task from '$lib/components/Task.svelte';
 	import { initialParameters } from '$lib/stores/parameter/ParameterStore';
+	import { WorkerPool, type PoolEntry } from '$lib/worker/utils';
+	import { readable } from 'svelte/store';
 
 	const tasks = new Array<WorkerAction>();
 
@@ -13,7 +14,7 @@
 		}
 	};
 
-	defaultTask.simParams.Sim.tps = 2000;
+	defaultTask.simParams.Sim.tps = 120;
 
 	const XLIM = 10,
 		YLIM = 30,
@@ -30,20 +31,35 @@
 		}
 	}
 
-	// for (const vf of [3, 6, 12, 18, 36])
-	const vf = 3;
-	for (const dA of linspace(-XLIM, XLIM, GRAN))
-		for (const dV of linspace(-YLIM, YLIM, GRAN)) {
-			defaultTask.simParams.FV.vx = vf;
-			defaultTask.simParams.LV.vx = vf - dV;
-			defaultTask.simParams.FV.ax = dA;
-			tasks.push(defaultTask);
-		}
+	const workers = new WorkerPool(14);
+
+	const display = readable(workers.pool, function (set) {
+		workers.subscribe(set);
+	});
+
+	function start() {
+		// for (const time of [15, 5, 15, 2, 3]) {
+		// 	const clone = structuredClone(defaultTask);
+		// 	clone.params.maxElapsedTimeInSeconds = time;
+
+		// 	workers.dispatch(clone).then(console.log);
+		// }
+		for (const vf of [3, 6, 12, 18, 36])
+			for (const dA of linspace(-XLIM, XLIM, GRAN))
+				for (const dV of linspace(-YLIM, YLIM, GRAN)) {
+					const clone = structuredClone(defaultTask);
+					clone.simParams.FV.vx = vf;
+					clone.simParams.LV.vx = vf - dV;
+					clone.simParams.FV.ax = dA;
+					workers.dispatch(clone).then(console.log);
+				}
+	}
 </script>
 
 Results:
 <div class="flex flex-col gap-2">
-	{#each tasks as task}
-		<Task workerAction={task} />
+	<button on:click={start}> Start </button>
+	{#each Object.entries($display) as [id, worker]}
+		<h1>Worker #{id}: {worker.status}</h1>
 	{/each}
 </div>
