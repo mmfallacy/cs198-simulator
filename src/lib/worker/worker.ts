@@ -1,26 +1,31 @@
 import * as v from 'valibot';
-import { WorkerActionSchema, type RunnerParams, type WorkerReturn } from './types';
+import { WorkerActionSchema, type RunnerParams } from './types';
 import type { ParameterInput } from '$lib/stores/parameter/types';
 import type { Algorithm } from '$lib/algorithms';
 import { MAX_TICK, Algorithms, CAR_DIMENSIONS, RATIO } from '$lib/const';
 import { simulator } from '$lib/simulator/simulator';
+import type { State } from '$lib/simulator/types';
 
 // Use this postMessage wrapper for worker returns type safety
-function postMessage(message: WorkerReturn) {
-	self.postMessage(message);
+function postSuccess(value: State) {
+	self.postMessage({ status: 'success', value });
 }
 
-onmessage = function (evt) {
+function postError(message: string) {
+	self.postMessage({ status: 'error', message });
+}
+
+onmessage = async function (evt) {
 	const result = v.safeParse(WorkerActionSchema, evt.data);
 
-	if (!result.success) throw new Error('Invalid Worker Action');
+	console.log('received', result.output);
+	if (!result.success) return postError('Invalid worker action');
+
 	const { simParams, fcwaKey, params } = result.output;
 
 	const state = runner(simParams, Algorithms[fcwaKey], params);
 
-	postMessage(state);
-
-	self.close();
+	postSuccess(state);
 };
 
 function isUndefined(value: unknown): value is undefined {
@@ -43,7 +48,7 @@ function runner(
 	while (true) {
 		const { value, done } = sim.next();
 
-		if (done) throw new Error('Detected Collision.');
+		if (done) return value;
 
 		const distance = value.LV.x + CAR_DIMENSIONS.w / RATIO.px_per_m;
 
@@ -59,7 +64,6 @@ function runner(
 			!isUndefined(maxElapsedTimeInSeconds) &&
 			performance.now() - startTime >= maxElapsedTimeInSeconds * 1000
 		) {
-			console.log(performance.now() - startTime);
 			return value;
 		}
 	}
