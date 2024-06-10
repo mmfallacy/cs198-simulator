@@ -1,11 +1,11 @@
 import {
 	CarParameterSchema,
 	ParameterSchema,
-	SimParameterSchema,
-	type ParameterInput
+	SimParameterSchema
 } from '$lib/stores/parameter/types';
 import * as v from 'valibot';
-import { CarSchema, StateSchema, type State } from '../simulator/types';
+import { CarSchema, StateSchema } from '../simulator/types';
+import { flattenParams, flattenState } from './utils';
 
 // FIX: import works but raises "Cannot find module or its corresponding type decs"
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -15,27 +15,7 @@ const BaseEntrySchema = v.object({
 	state: StateSchema
 });
 
-type Flat = Record<string, number | string | boolean>;
-
-export function flattenParams(params: ParameterInput) {
-	const flat: Flat = {};
-	for (const [key, value] of Object.entries(params.FV)) flat[`params_FV_${key}`] = value;
-	for (const [key, value] of Object.entries(params.LV)) flat[`params_LV_${key}`] = value;
-	for (const [key, value] of Object.entries(params.Sim)) flat[`params_Sim_${key}`] = value;
-	return flat;
-}
-
-function flattenState(state: State) {
-	const { FV, LV, ...rest } = state;
-
-	const flat: Flat = {};
-
-	for (const [key, value] of Object.entries(FV)) flat[`state_FV_${key}`] = value;
-	for (const [key, value] of Object.entries(LV)) flat[`state_LV_${key}`] = value;
-	for (const [key, value] of Object.entries(rest)) flat[`state_${key}`] = value;
-
-	return flat;
-}
+export type Flat = Record<string, number | string | boolean>;
 
 export const EntrySchema = v.pipe(
 	BaseEntrySchema,
