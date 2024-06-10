@@ -4,6 +4,7 @@
 	import { COLORS } from '$lib/colors';
 	import Params from '$lib/components/Params.svelte';
 	import { Algorithms, MAX_TICK, RATIO } from '$lib/const';
+	import { EntrySchema, db } from '$lib/database';
 	import { addToCenter, createMarker, createRoad, createVehicle } from '$lib/rendererUtils';
 	import { simulator } from '$lib/simulator/simulator';
 	import { type State } from '$lib/simulator/types';
@@ -107,6 +108,16 @@
 		marker.x = 0;
 	}
 
+	async function save() {
+		const entry = v.parse(EntrySchema, { state: state, params: $params });
+
+		console.log(await db.runs.where('params').equals(entry.params).toArray());
+		if ((await db.runs.where('params').equals(entry.params).count()) > 0)
+			throw new Error('A run with the same parameters has already been saved');
+		db.runs.add(entry);
+		console.log('Entry has been saved.');
+	}
+
 	// Reset on parameter change
 	$: {
 		$params;
@@ -143,6 +154,7 @@
 			<h4>Current MTTC: {state.mttc}</h4>
 			<h4>MTTC on first warning distance hit: {state.first_mttc ?? 'not yet hit'}</h4>
 		{/if}
+		<button on:click={save}>Save to DB</button>
 	</section>
 	<section class="params">
 		<Params />
