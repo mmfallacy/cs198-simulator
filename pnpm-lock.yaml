@@ -8,12 +8,18 @@ importers:
 
   .:
     dependencies:
+      '@solana/fast-stable-stringify':
+        specifier: 2.0.0-preview.1.20240416070914.c44d1793aa5363145e8ad70a31a212685967b46d
+        version: 2.0.0-preview.1.20240416070914.c44d1793aa5363145e8ad70a31a212685967b46d
+      dexie:
+        specifier: ^4.0.7
+        version: 4.0.7
       pixi.js:
         specifier: ^7.4.0
         version: 7.4.0
       valibot:
-        specifier: ^0.27.1
-        version: 0.27.1
+        specifier: ^0.31.1
+        version: 0.31.1
     devDependencies:
       '@sveltejs/adapter-auto':
         specifier: ^3.0.0
@@ -68,7 +74,7 @@ importers:
         version: 4.2.8
       svelte-check:
         specifier: ^3.6.0
-        version: 3.6.2(postcss-load-config@4.0.2(postcss@8.4.38))(postcss@8.4.38)(svelte@4.2.8)
+        version: 3.6.2(postcss-load-config@6.0.1(postcss@8.4.38))(postcss@8.4.38)(svelte@4.2.8)
       tailwindcss:
         specifier: ^3.4.1
         version: 3.4.3
@@ -579,6 +585,9 @@ packages:
   '@sinclair/typebox@0.27.8':
     resolution: {integrity: sha512-+Fj43pSMwJs4KRrH/938Uf+uAELIgVBmQzg/q1YG10djyfA3TnrU8N8XzqCh/okZdszqBQTZf96idMfE5lnwTA==}
 
+  '@solana/fast-stable-stringify@2.0.0-preview.1.20240416070914.c44d1793aa5363145e8ad70a31a212685967b46d':
+    resolution: {integrity: sha512-FSq8KThrn9usbQA5voS4LA+d0/wIPlLQZC/XFjOJkCn+E6Wi3RnqesX8TdsFruJo2leJwAq84XS8/TOenWQxYQ==}
+
   '@sveltejs/adapter-auto@3.1.0':
     resolution: {integrity: sha512-igS5hqCwdiXWb8NoWzThKCVQQj9tKgUkbTtzfxBPgSLOyFjkiGNDX0SgCoY2QIUWBqOkfGTOqGlrW5Ynw9oUvw==}
     peerDependencies:
@@ -912,6 +921,9 @@ packages:
 
   devalue@4.3.2:
     resolution: {integrity: sha512-KqFl6pOgOW+Y6wJgu80rHpo2/3H07vr8ntR9rkkFIRETewbf5GaYYcakYfiKz89K+sLsuPkQIZaXDMjUObZwWg==}
+
+  dexie@4.0.7:
+    resolution: {integrity: sha512-M+Lo6rk4pekIfrc2T0o2tvVJwL6EAAM/B78DNfb8aaxFVoI1f8/rz5KTxuAnApkwqTSuxx7T5t0RKH7qprapGg==}
 
   didyoumean@1.2.2:
     resolution: {integrity: sha512-gxtyfqMg7GKyhQmb056K7M3xszy/myH8w+B4RT+QXBQsvAOdc3XymqDDPHx1BgPgsdAA5SIifona89YtRATDzw==}
@@ -1262,6 +1274,10 @@ packages:
     resolution: {integrity: sha512-O18pf7nyvHTckunPWCV1XUNXU1piu01y2b7ATJ0ppkUkk8ocqVWBrYjJBCwHDjD/ZWcfyrA0P4gKhzWGi5EINQ==}
     engines: {node: '>=14'}
 
+  lilconfig@3.1.2:
+    resolution: {integrity: sha512-eop+wDAvpItUys0FWkHIKeC9ybYrTGbU41U5K7+bttZZeohvnY7M9dZ5kB21GNWiFT2q1OoPTvncPCgSOVO5ow==}
+    engines: {node: '>=14'}
+
   lines-and-columns@1.2.4:
     resolution: {integrity: sha512-7ylylesZQ/PV29jhEDl3Ufjo6ZX7gCqJr5F7PKrqc93v7fzSymt1BpwEU8nAUXs8qzzvqhbjhK5QZg6Mt/HkBg==}
 
@@ -1509,6 +1525,24 @@ packages:
       postcss:
         optional: true
       ts-node:
+        optional: true
+
+  postcss-load-config@6.0.1:
+    resolution: {integrity: sha512-oPtTM4oerL+UXmx+93ytZVN82RrlY/wPUV8IeDxFrzIjXOLF1pN+EmKPLbubvKHT2HC20xXsCAH2Z+CKV6Oz/g==}
+    engines: {node: '>= 18'}
+    peerDependencies:
+      jiti: '>=1.21.0'
+      postcss: '>=8.0.9'
+      tsx: ^4.8.1
+      yaml: ^2.4.2
+    peerDependenciesMeta:
+      jiti:
+        optional: true
+      postcss:
+        optional: true
+      tsx:
+        optional: true
+      yaml:
         optional: true
 
   postcss-nested@6.0.1:
@@ -1923,8 +1957,8 @@ packages:
   util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
 
-  valibot@0.27.1:
-    resolution: {integrity: sha512-k57/5/kMwMjiVP0LUMpa+n4ihSemuXshz1ND4fftKw1bkHZYN/TnHcbjaEie3K7FwAceiOgugLZPjSaNxdygeg==}
+  valibot@0.31.1:
+    resolution: {integrity: sha512-2YYIhPrnVSz/gfT2/iXVTrSj92HwchCt9Cga/6hX4B26iCz9zkIsGTS0HjDYTZfTi1Un0X6aRvhBi1cfqs/i0Q==}
 
   vite-node@1.1.1:
     resolution: {integrity: sha512-2bGE5w4jvym5v8llF6Gu1oBrmImoNSs4WmRVcavnG2me6+8UQntTqLiAMFyiAobp+ZXhj5ZFhI7SmLiFr/jrow==}
@@ -2426,6 +2460,8 @@ snapshots:
 
   '@sinclair/typebox@0.27.8': {}
 
+  '@solana/fast-stable-stringify@2.0.0-preview.1.20240416070914.c44d1793aa5363145e8ad70a31a212685967b46d': {}
+
   '@sveltejs/adapter-auto@3.1.0(@sveltejs/kit@2.0.6(@sveltejs/vite-plugin-svelte@3.0.1(svelte@4.2.8)(vite@5.0.10(@types/node@20.12.10)))(svelte@4.2.8)(vite@5.0.10(@types/node@20.12.10)))':
     dependencies:
       '@sveltejs/kit': 2.0.6(@sveltejs/vite-plugin-svelte@3.0.1(svelte@4.2.8)(vite@5.0.10(@types/node@20.12.10)))(svelte@4.2.8)(vite@5.0.10(@types/node@20.12.10))
@@ -2805,6 +2841,8 @@ snapshots:
   detect-indent@6.1.0: {}
 
   devalue@4.3.2: {}
+
+  dexie@4.0.7: {}
 
   didyoumean@1.2.2: {}
 
@@ -3194,6 +3232,9 @@ snapshots:
 
   lilconfig@3.1.1: {}
 
+  lilconfig@3.1.2:
+    optional: true
+
   lines-and-columns@1.2.4: {}
 
   local-pkg@0.5.0:
@@ -3430,6 +3471,13 @@ snapshots:
     optionalDependencies:
       postcss: 8.4.38
 
+  postcss-load-config@6.0.1(postcss@8.4.38):
+    dependencies:
+      lilconfig: 3.1.2
+    optionalDependencies:
+      postcss: 8.4.38
+    optional: true
+
   postcss-nested@6.0.1(postcss@8.4.38):
     dependencies:
       postcss: 8.4.38
@@ -3653,7 +3701,7 @@ snapshots:
 
   supports-preserve-symlinks-flag@1.0.0: {}
 
-  svelte-check@3.6.2(postcss-load-config@4.0.2(postcss@8.4.38))(postcss@8.4.38)(svelte@4.2.8):
+  svelte-check@3.6.2(postcss-load-config@6.0.1(postcss@8.4.38))(postcss@8.4.38)(svelte@4.2.8):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.20
       chokidar: 3.5.3
@@ -3662,7 +3710,7 @@ snapshots:
       picocolors: 1.0.0
       sade: 1.8.1
       svelte: 4.2.8
-      svelte-preprocess: 5.1.3(postcss-load-config@4.0.2(postcss@8.4.38))(postcss@8.4.38)(svelte@4.2.8)(typescript@5.3.3)
+      svelte-preprocess: 5.1.3(postcss-load-config@6.0.1(postcss@8.4.38))(postcss@8.4.38)(svelte@4.2.8)(typescript@5.3.3)
       typescript: 5.3.3
     transitivePeerDependencies:
       - '@babel/core'
@@ -3689,7 +3737,7 @@ snapshots:
     dependencies:
       svelte: 4.2.8
 
-  svelte-preprocess@5.1.3(postcss-load-config@4.0.2(postcss@8.4.38))(postcss@8.4.38)(svelte@4.2.8)(typescript@5.3.3):
+  svelte-preprocess@5.1.3(postcss-load-config@6.0.1(postcss@8.4.38))(postcss@8.4.38)(svelte@4.2.8)(typescript@5.3.3):
     dependencies:
       '@types/pug': 2.0.10
       detect-indent: 6.1.0
@@ -3699,7 +3747,7 @@ snapshots:
       svelte: 4.2.8
     optionalDependencies:
       postcss: 8.4.38
-      postcss-load-config: 4.0.2(postcss@8.4.38)
+      postcss-load-config: 6.0.1(postcss@8.4.38)
       typescript: 5.3.3
 
   svelte@4.2.8:
@@ -3811,7 +3859,7 @@ snapshots:
 
   util-deprecate@1.0.2: {}
 
-  valibot@0.27.1: {}
+  valibot@0.31.1: {}
 
   vite-node@1.1.1(@types/node@20.12.10):
     dependencies:
