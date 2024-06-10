@@ -6,5 +6,5 @@ export const db = new Dexie('fcwaSim') as Dexie & {
 };
 
 db.version(1).stores({
-	runs: `[${PrimaryKeys.join('+')}], ${Fields}`
+	runs: `&[${PrimaryKeys.join('+')}], ${Fields}`
 });
