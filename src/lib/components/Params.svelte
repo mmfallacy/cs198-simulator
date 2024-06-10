@@ -1,23 +1,11 @@
 <script lang="ts">
 	import { Algorithms } from '$lib/const';
 	import { ParameterStore as params } from '$lib/stores/parameter/ParameterStore';
-	import type { ParameterInput } from '$lib/stores/parameter/types';
+	import { adapter } from '$lib/utils';
 
 	let isWarningInitial = true;
 
 	$: console.log(isWarningInitial);
-
-	function adapter(params: ParameterInput) {
-		return {
-			vf: params.FV.vx,
-			af: params.FV.abr,
-			vl: params.LV.vx,
-			al: params.LV.abr,
-			tr: params.Sim.tr,
-			ts: params.Sim.ts,
-			dmin: params.Sim.dmin
-		};
-	}
 
 	// FIX: Ensure typesafety
 	//@ts-ignore
