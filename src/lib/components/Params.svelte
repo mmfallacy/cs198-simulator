@@ -19,6 +19,8 @@
 		};
 	}
 
+	// FIX: Ensure typesafety
+	//@ts-ignore
 	$: if (isWarningInitial) $params.Sim.id = Algorithms[$params.Sim.algo](adapter($params));
 </script>
 
