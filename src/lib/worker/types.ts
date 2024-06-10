@@ -12,7 +12,7 @@ export const RunnerParamsSchema = v.object({
 	maxTicks: v.optional(v.number())
 });
 
-export type RunnerParams = v.Input<typeof RunnerParamsSchema>;
+export type RunnerParams = v.InferInput<typeof RunnerParamsSchema>;
 
 export const WorkerActionSchema = v.object({
 	simParams: ParameterSchema,
@@ -20,7 +20,7 @@ export const WorkerActionSchema = v.object({
 	params: RunnerParamsSchema
 });
 
-export type WorkerAction = v.Input<typeof WorkerActionSchema>;
+export type WorkerAction = v.InferInput<typeof WorkerActionSchema>;
 
 export const WorkerReturnSchema = v.variant('status', [
 	v.object({
@@ -33,4 +33,4 @@ export const WorkerReturnSchema = v.variant('status', [
 	})
 ]);
 
-export type WorkerReturn = DeepReadonly<v.Input<typeof WorkerReturnSchema>>;
+export type WorkerReturn = DeepReadonly<v.InferInput<typeof WorkerReturnSchema>>;

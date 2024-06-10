@@ -7,7 +7,7 @@ export const CarSchema = v.object({
 	ax: v.number(),
 	abr: v.number()
 });
-export type Car = v.Input<typeof CarSchema>;
+export type Car = v.InferInput<typeof CarSchema>;
 
 export const StateSchema = v.object({
 	FV: CarSchema,
@@ -22,4 +22,4 @@ export const StateSchema = v.object({
 	collision: v.boolean()
 });
 
-export type State = v.Input<typeof StateSchema>;
+export type State = v.InferInput<typeof StateSchema>;

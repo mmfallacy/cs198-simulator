@@ -5,24 +5,24 @@ export const CarParameterSchema = v.object({
 	// Initial velocity (float)
 	vx: v.number(),
 	// Acceleration due to braking (negative float).
-	abr: v.number([v.maxValue(0)]),
+	abr: v.pipe(v.number(), v.maxValue(0)),
 	// Acceleration. (positive float)
 	ax: v.number()
 });
 
 export const SimParameterSchema = v.object({
 	// Reaction time delay (ms)
-	tr: v.number([v.minValue(0)]),
+	tr: v.pipe(v.number(), v.minValue(0)),
 	// System time delay (ms)
-	ts: v.number([v.minValue(0)]),
+	ts: v.pipe(v.number(), v.minValue(0)),
 	// Minimum Safety Distance (float)
-	dmin: v.number([v.minValue(0)]),
+	dmin: v.pipe(v.number(), v.minValue(0)),
 	// Initial distance between FV and LV
-	id: v.number([v.minValue(0)]),
+	id: v.pipe(v.number(), v.minValue(0)),
 	// Test runs (positive integer),
-	N: v.number([v.minValue(0), v.integer()]),
+	N: v.pipe(v.number(), v.minValue(0), v.integer()),
 	// Ticks per second,
-	tps: v.number([v.minValue(0), v.integer()]),
+	tps: v.pipe(v.number(), v.minValue(0), v.integer()),
 	// FCWS Algorithm used,
 	algo: v.picklist(Object.keys(Algorithms) as Array<keyof typeof Algorithms>)
 });
@@ -33,6 +33,6 @@ export const ParameterSchema = v.object({
 	Sim: SimParameterSchema
 });
 
-export type CarParameterInput = v.Input<typeof CarParameterSchema>;
-export type SimParameterInput = v.Input<typeof SimParameterSchema>;
-export type ParameterInput = v.Input<typeof ParameterSchema>;
+export type CarParameterInput = v.InferInput<typeof CarParameterSchema>;
+export type SimParameterInput = v.InferInput<typeof SimParameterSchema>;
+export type ParameterInput = v.InferInput<typeof ParameterSchema>;
