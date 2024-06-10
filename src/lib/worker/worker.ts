@@ -5,6 +5,9 @@ import type { Algorithm } from '$lib/algorithms';
 import { MAX_TICK, Algorithms, CAR_DIMENSIONS, RATIO } from '$lib/const';
 import { simulator } from '$lib/simulator/simulator';
 import type { State } from '$lib/simulator/types';
+import { db } from '$lib/database/database';
+import { flattenParams, unflattenState } from '$lib/database/utils';
+import { EntrySchema } from '$lib/database/types';
 
 // Use this postMessage wrapper for worker returns type safety
 function postSuccess(value: State) {
@@ -18,12 +21,22 @@ function postError(message: string) {
 onmessage = async function (evt) {
 	const result = v.safeParse(WorkerActionSchema, evt.data);
 
-	console.log('received', result.output);
 	if (!result.success) return postError('Invalid worker action');
 
 	const { simParams, fcwaKey, params } = result.output;
 
+	const match = await db.runs.where(flattenParams(simParams)).first();
+	console.log(match);
+	if (!isUndefined(match)) {
+		console.warn('Entry is already in database. Returning cached');
+		return postSuccess(unflattenState(match));
+	}
+
 	const state = runner(simParams, Algorithms[fcwaKey], params);
+
+	const entry = v.parse(EntrySchema, { params: simParams, state });
+
+	await db.runs.add(entry);
 
 	postSuccess(state);
 };
