@@ -1,37 +1,48 @@
-import { ParameterSchema } from '../stores/parameter/types';
+import {
+	CarParameterSchema,
+	ParameterSchema,
+	SimParameterSchema,
+	type ParameterInput
+} from '$lib/stores/parameter/types';
 import * as v from 'valibot';
-import { CarSchema, StateSchema } from '../simulator/types';
+import { CarSchema, StateSchema, type State } from '../simulator/types';
 
 // FIX: import works but raises "Cannot find module or its corresponding type decs"
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 //@ts-ignore
-import stringify from '@solana/fast-stable-stringify';
-
 const BaseEntrySchema = v.object({
 	params: ParameterSchema,
 	state: StateSchema
 });
 
-function flatten(input: v.InferInput<typeof BaseEntrySchema>) {
-	const { FV, LV, ...rest } = input.state;
+type Flat = Record<string, number | string | boolean>;
 
-	return {
-		params: stringify(input.params),
-		fv_x: FV.x,
-		fv_vx: FV.vx,
-		fv_ax: FV.ax,
-		fv_ave_vx: FV.ave_vx,
-		fv_abr: FV.abr,
-		lv_x: LV.x,
-		lv_vx: LV.vx,
-		lv_ax: LV.ax,
-		lv_ave_vx: LV.ave_vx,
-		lv_abr: LV.abr,
-		...rest
-	};
+export function flattenParams(params: ParameterInput) {
+	const flat: Flat = {};
+	for (const [key, value] of Object.entries(params.FV)) flat[`params_FV_${key}`] = value;
+	for (const [key, value] of Object.entries(params.LV)) flat[`params_LV_${key}`] = value;
+	for (const [key, value] of Object.entries(params.Sim)) flat[`params_Sim_${key}`] = value;
+	return flat;
 }
 
-export const EntrySchema = v.pipe(BaseEntrySchema, v.transform(flatten));
+function flattenState(state: State) {
+	const { FV, LV, ...rest } = state;
+
+	const flat: Flat = {};
+
+	for (const [key, value] of Object.entries(FV)) flat[`state_FV_${key}`] = value;
+	for (const [key, value] of Object.entries(LV)) flat[`state_LV_${key}`] = value;
+	for (const [key, value] of Object.entries(rest)) flat[`state_${key}`] = value;
+
+	return flat;
+}
+
+export const EntrySchema = v.pipe(
+	BaseEntrySchema,
+	v.transform(function (input) {
+		return { ...flattenParams(input.params), ...flattenState(input.state) };
+	})
+);
 
 export type Entry = v.InferOutput<typeof EntrySchema>;
 /**
@@ -40,10 +51,18 @@ export type Entry = v.InferOutput<typeof EntrySchema>;
  * 		  instead of the expected transformed schema.
  */
 
-export const RestKeys = Object.keys(StateSchema.entries).filter(
-	(key) => key !== 'FV' && key !== 'LV'
-);
-export const FVKeys = Object.keys(CarSchema.entries).map((key) => `fv_${key}`);
-export const LVKeys = Object.keys(CarSchema.entries).map((key) => `lv_${key}`);
+export const PrimaryKeys = [
+	...Object.keys(CarParameterSchema.entries).map((key) => `params_FV_${key}`),
+	...Object.keys(CarParameterSchema.entries).map((key) => `params_LV_${key}`),
+	...Object.keys(SimParameterSchema.entries).map((key) => `params_Sim_${key}`)
+];
+
+console.log(PrimaryKeys);
+
+export const RestKeys = Object.keys(StateSchema.entries)
+	.filter((key) => key !== 'FV' && key !== 'LV')
+	.map((key) => `state_${key}`);
+export const FVKeys = Object.keys(CarSchema.entries).map((key) => `state_FV_${key}`);
+export const LVKeys = Object.keys(CarSchema.entries).map((key) => `state_LV_${key}`);
 
 export const Fields = [...FVKeys, ...LVKeys, ...RestKeys].join(', ');

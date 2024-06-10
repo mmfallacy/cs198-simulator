@@ -5,7 +5,7 @@
 	import Params from '$lib/components/Params.svelte';
 	import { Algorithms, MAX_TICK, RATIO } from '$lib/const';
 	import { db } from '$lib/database/database';
-	import { EntrySchema } from '$lib/database/types';
+	import { EntrySchema, flattenParams } from '$lib/database/types';
 	import { addToCenter, createMarker, createRoad, createVehicle } from '$lib/rendererUtils';
 	import { simulator } from '$lib/simulator/simulator';
 	import { type State } from '$lib/simulator/types';
@@ -112,9 +112,12 @@
 	async function save() {
 		const entry = v.parse(EntrySchema, { state: state, params: $params });
 
-		console.log(await db.runs.where('params').equals(entry.params).toArray());
-		if ((await db.runs.where('params').equals(entry.params).count()) > 0)
-			throw new Error('A run with the same parameters has already been saved');
+		const flatParams = flattenParams($params);
+
+		const match = await db.runs.where(flatParams).count();
+		if (match > 0)
+			return console.warn('Skipping save. There is an existing entry with the same parameters');
+
 		db.runs.add(entry);
 		console.log('Entry has been saved.');
 	}

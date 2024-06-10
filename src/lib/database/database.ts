@@ -1,10 +1,10 @@
 import Dexie, { type EntityTable } from 'dexie';
-import { Fields, type Entry } from './types';
+import { Fields, PrimaryKeys, type Entry } from './types';
 
 export const db = new Dexie('fcwaSim') as Dexie & {
-	runs: EntityTable<Entry, 'params'>;
+	runs: EntityTable<Entry>;
 };
 
 db.version(1).stores({
-	runs: `&params, ${Fields}`
+	runs: `[${PrimaryKeys.join('+')}], ${Fields}`
 });
