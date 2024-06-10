@@ -57,10 +57,11 @@ export class WorkerPool {
 
 	selectWorker(): Promise<PoolEntry> {
 		return new Promise((resolve) => {
+			const timeout = 5;
 			const check = () => {
 				const result = this.getIdleWorker();
 				if (result) resolve(result);
-				else setTimeout(check, 50);
+				else setTimeout(check, timeout);
 			};
 			check();
 		});
@@ -87,9 +88,10 @@ export class WorkerPool {
 
 	async dispatch(action: WorkerAction) {
 		const entry = await this.selectWorker();
+		console.log(`Worker ${entry.id} running: `, action);
 		const result = await runWorker(entry.worker, action);
-
 		this.releaseWorker(entry);
+		console.log(`Worker ${entry.id} released`);
 
 		return result;
 	}

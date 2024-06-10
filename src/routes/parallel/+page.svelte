@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { type WorkerAction } from '$lib/worker/types';
 	import { initialParameters } from '$lib/stores/parameter/ParameterStore';
-	import { WorkerPool, type PoolEntry } from '$lib/worker/utils';
+	import { WorkerPool } from '$lib/worker/pool';
 	import { readable } from 'svelte/store';
 
 	const tasks = new Array<WorkerAction>();
