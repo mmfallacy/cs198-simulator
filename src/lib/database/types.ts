@@ -1,7 +1,6 @@
-import { ParameterSchema } from './stores/parameter/types';
+import { ParameterSchema } from '../stores/parameter/types';
 import * as v from 'valibot';
-import { CarSchema, StateSchema } from './simulator/types';
-import Dexie, { type EntityTable } from 'dexie';
+import { CarSchema, StateSchema } from '../simulator/types';
 
 // FIX: import works but raises "Cannot find module or its corresponding type decs"
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -41,16 +40,10 @@ export type Entry = v.InferOutput<typeof EntrySchema>;
  * 		  instead of the expected transformed schema.
  */
 
-const RestKeys = Object.keys(StateSchema.entries).filter((key) => key !== 'FV' && key !== 'LV');
-const FVKeys = Object.keys(CarSchema.entries).map((key) => `fv_${key}`);
-const LVKeys = Object.keys(CarSchema.entries).map((key) => `lv_${key}`);
+export const RestKeys = Object.keys(StateSchema.entries).filter(
+	(key) => key !== 'FV' && key !== 'LV'
+);
+export const FVKeys = Object.keys(CarSchema.entries).map((key) => `fv_${key}`);
+export const LVKeys = Object.keys(CarSchema.entries).map((key) => `lv_${key}`);
 
-const Fields = [...FVKeys, ...LVKeys, ...RestKeys].join(', ');
-
-export const db = new Dexie('fcwaSim') as Dexie & {
-	runs: EntityTable<Entry, 'params'>;
-};
-
-db.version(1).stores({
-	runs: `&params, ${Fields}`
-});
+export const Fields = [...FVKeys, ...LVKeys, ...RestKeys].join(', ');
