@@ -4,7 +4,8 @@
 	import { COLORS } from '$lib/colors';
 	import Params from '$lib/components/Params.svelte';
 	import { Algorithms, MAX_TICK, RATIO } from '$lib/const';
-	import { EntrySchema, db } from '$lib/database';
+	import { db } from '$lib/database/database';
+	import { EntrySchema } from '$lib/database/types';
 	import { addToCenter, createMarker, createRoad, createVehicle } from '$lib/rendererUtils';
 	import { simulator } from '$lib/simulator/simulator';
 	import { type State } from '$lib/simulator/types';
