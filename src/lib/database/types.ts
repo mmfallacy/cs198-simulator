@@ -57,8 +57,6 @@ export const PrimaryKeys = [
 	...Object.keys(SimParameterSchema.entries).map((key) => `params_Sim_${key}`)
 ];
 
-console.log(PrimaryKeys);
-
 export const RestKeys = Object.keys(StateSchema.entries)
 	.filter((key) => key !== 'FV' && key !== 'LV')
 	.map((key) => `state_${key}`);
