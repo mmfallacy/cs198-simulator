@@ -3,6 +3,9 @@
 	import { initialParameters } from '$lib/stores/parameter/ParameterStore';
 	import { WorkerPool } from '$lib/worker/pool';
 	import { readable } from 'svelte/store';
+	import { Algorithms } from '$lib/const';
+	import { adapter, quadrealroot } from '$lib/utils';
+	import type { ParameterInput } from '$lib/stores/parameter/types';
 
 	const tasks = new Array<WorkerAction>();
 
@@ -37,6 +40,25 @@
 		workers.subscribe(set);
 	});
 
+	function mttc(params: ParameterInput) {
+		const { FV, LV } = params;
+		const roots = quadrealroot(0.5 * (FV.ax - LV.ax), FV.vx - LV.vx, -params.Sim.id);
+		if (isNaN(roots[0])) return Number.NEGATIVE_INFINITY;
+		const minroot = Math.min(...roots.filter((n) => n > 0));
+		if (!isFinite(minroot)) return Number.NEGATIVE_INFINITY;
+		return minroot;
+	}
+
+	function test() {
+		const test = structuredClone(initialParameters);
+		test.FV.vx = 3;
+		test.LV.vx = 5.709030100334492;
+		test.FV.ax = -9.732441471571903;
+		test.Sim.id = 0.2401337792641174;
+		console.log(mttc(test));
+	}
+	test();
+
 	function start() {
 		// for (const time of [15, 5, 15, 2, 3]) {
 		// 	const clone = structuredClone(defaultTask);
@@ -44,16 +66,26 @@
 
 		// 	workers.dispatch(clone).then(console.log);
 		// }
-		for (const vf of [3, 6, 12, 18, 36])
+		for (const vf of [3]) //, 6, 12, 18, 36])
 			for (const dA of linspace(-XLIM, XLIM, GRAN))
 				for (const dV of linspace(-YLIM, YLIM, GRAN)) {
 					const clone = structuredClone(defaultTask);
 					clone.simParams.FV.vx = vf;
 					clone.simParams.LV.vx = vf - dV;
 					clone.simParams.FV.ax = dA;
+					clone.simParams.Sim.id = Algorithms[clone.fcwaKey](adapter(clone.simParams));
+
+					if (dV > vf || clone.simParams.Sim.id < 0 || mttc(clone.simParams) <= 0) {
+						// console.warn('Skipping');
+						continue;
+					}
+
 					workers.dispatch(clone).then(console.log);
 				}
+		allDispatched = true;
 	}
+
+	let allDispatched = false;
 </script>
 
 Results:
@@ -62,4 +94,7 @@ Results:
 	{#each Object.entries($display) as [id, worker]}
 		<h1>Worker #{id}: {worker.status}</h1>
 	{/each}
+	{#if allDispatched}
+		<h1>All tasks dispatched! Please wait for remaining workers to finish</h1>
+	{/if}
 </div>
