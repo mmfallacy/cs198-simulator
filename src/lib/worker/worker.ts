@@ -26,7 +26,6 @@ onmessage = async function (evt) {
 	const { simParams, fcwaKey, params } = result.output;
 
 	const match = await db.runs.where(flattenParams(simParams)).first();
-	console.log(match);
 	if (!isUndefined(match)) {
 		console.warn('Entry is already in database. Returning cached');
 		return postSuccess(unflattenState(match));
