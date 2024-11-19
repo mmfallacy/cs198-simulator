@@ -59,6 +59,9 @@
 	}
 	test();
 
+	let totalDispatched = 0,
+		totalDone = 0;
+
 	function start() {
 		// for (const time of [15, 5, 15, 2, 3]) {
 		// 	const clone = structuredClone(defaultTask);
@@ -66,7 +69,7 @@
 
 		// 	workers.dispatch(clone).then(console.log);
 		// }
-		for (const vf of [3]) //, 6, 12, 18, 36])
+		for (const vf of [36]) //, 6, 12, 18, 36])
 			for (const dA of linspace(-XLIM, XLIM, GRAN))
 				for (const dV of linspace(-YLIM, YLIM, GRAN)) {
 					const clone = structuredClone(defaultTask);
@@ -74,13 +77,19 @@
 					clone.simParams.LV.vx = vf - dV;
 					clone.simParams.FV.ax = dA;
 					clone.simParams.Sim.id = Algorithms[clone.fcwaKey](adapter(clone.simParams));
+					clone.simParams.Sim.algo = clone.fcwaKey;
 
 					if (dV > vf || clone.simParams.Sim.id < 0 || mttc(clone.simParams) <= 0) {
 						// console.warn('Skipping');
 						continue;
 					}
 
-					workers.dispatch(clone).then(console.log);
+					totalDispatched += 1;
+
+					workers.dispatch(clone).then((res) => {
+						console.log(res);
+						totalDone += 1;
+					});
 				}
 		allDispatched = true;
 	}
@@ -91,8 +100,10 @@
 Results:
 <div class="flex flex-col gap-2">
 	<button on:click={start}> Start </button>
+	<h1>Total Dispatched: {totalDispatched}</h1>
+	<h1>Total Done: {totalDone}</h1>
 	{#each Object.entries($display) as [id, worker]}
-		<h1>Worker #{id}: {worker.status}</h1>
+		<h3>Worker #{id}: {worker.status}</h3>
 	{/each}
 	{#if allDispatched}
 		<h1>All tasks dispatched! Please wait for remaining workers to finish</h1>
