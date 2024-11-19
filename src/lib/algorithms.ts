@@ -1,3 +1,5 @@
+import { CAR_M_DIMENSIONS } from './const';
+
 export type Algorithm = (inputs: AlgorithmInputs) => number;
 
 export type AlgorithmInputs = {
@@ -43,4 +45,8 @@ export const bellarusso: Algorithm = (inputs) => {
 // With dmin wrapper. Clamp algorithm values to have a minimum value of dmin
 export function withdmin(algo: Algorithm): Algorithm {
 	return (inputs) => Math.max(algo(inputs), inputs.dmin);
+}
+
+export function ncar(n: number): Algorithm {
+	return () => CAR_M_DIMENSIONS.w * n;
 }
