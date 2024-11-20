@@ -4,12 +4,21 @@
 	import { adapter } from '$lib/utils';
 
 	let isWarningInitial = true;
+	let shouldUseHelpers = false;
 
 	$: console.log(isWarningInitial);
 
 	// FIX: Ensure typesafety
 	//@ts-ignore
 	$: if (isWarningInitial) $params.Sim.id = Algorithms[$params.Sim.algo](adapter($params));
+
+	$: if (shouldUseHelpers) {
+		$params.LV.vx = $params.FV.vx - dV;
+		$params.FV.ax = dA;
+	}
+
+	let dA = 0;
+	let dV = 0;
 </script>
 
 <h2>Following Vehicle (FV):</h2>
@@ -18,11 +27,11 @@
 <h4>Acceleration due to braking (- mps^2)</h4>
 <input type="number" bind:value={$params.FV.abr} />
 <h4>Acceleration (+ mps^2)</h4>
-<input type="number" bind:value={$params.FV.ax} />
+<input type="number" bind:value={$params.FV.ax} disabled={shouldUseHelpers} />
 
 <h2>Leading Vehicle (LV):</h2>
 <h4>Initial Velocity (+ mps)</h4>
-<input type="number" bind:value={$params.LV.vx} />
+<input type="number" bind:value={$params.LV.vx} disabled={shouldUseHelpers} />
 <!-- <h4>Acceleration due to braking (- km/h^2)</h4>
 <input type="number" bind:value={$params.LV.abr} /> -->
 
@@ -43,5 +52,16 @@
 		<option value={algo}>{algo}</option>
 	{/each}
 </select>
+
+<h2>(<i>Optional</i>) Helpers</h2>
+
+<label class="ml-2" for="usehelpers">Use Helpers</label>
+<input type="checkbox" name="usehelpers" bind:checked={shouldUseHelpers} />
+
+<h4>Relative Velocities</h4>
+<input type="number" bind:value={dV} disabled={!shouldUseHelpers} />
+
+<h4>Relative Acceleration given LV non-accelerating</h4>
+<input type="number" bind:value={dA} disabled={!shouldUseHelpers} />
 <!-- <h4>Number of test runs</h4>
 <input type="number" bind:value={$params.Sim.N} /> -->
