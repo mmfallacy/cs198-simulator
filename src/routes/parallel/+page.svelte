@@ -44,7 +44,7 @@
 		const { FV, LV } = params;
 		const roots = quadrealroot(0.5 * (FV.ax - LV.ax), FV.vx - LV.vx, -params.Sim.id);
 		if (isNaN(roots[0])) return Number.NEGATIVE_INFINITY;
-		const minroot = Math.min(...roots.filter((n) => n > 0));
+		const minroot = Math.min(...roots.filter((n) => n >= 0));
 		if (!isFinite(minroot)) return Number.NEGATIVE_INFINITY;
 		return minroot;
 	}
