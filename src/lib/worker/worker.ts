@@ -62,7 +62,8 @@ function runner(
 
 		if (done) return value;
 
-		const distance = value.LV.x + CAR_DIMENSIONS.w / RATIO.px_per_m;
+		// const distance = value.LV.x + CAR_DIMENSIONS.w / RATIO.px_per_m;
+		const distance = value.FV.x;
 
 		if (!isUndefined(maxDistanceInMeters) && distance >= maxDistanceInMeters) return value;
 
