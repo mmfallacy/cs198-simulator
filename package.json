@@ -40,8 +40,8 @@
 	"type": "module",
 	"dependencies": {
 		"@solana/fast-stable-stringify": "2.0.0-preview.1.20240416070914.c44d1793aa5363145e8ad70a31a212685967b46d",
-		"dexie": "^4.0.7",
-		"dexie-export-import": "^4.1.2",
+		"dexie": "^4.0.10",
+		"dexie-export-import": "^4.1.4",
 		"pixi.js": "^7.4.0",
 		"valibot": "^0.31.1"
 	},
