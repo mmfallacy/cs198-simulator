@@ -136,7 +136,7 @@
 
 <main>
 	<section>
-		<div use:pixiCanvas={app.view} />
+		<div use:pixiCanvas={app.view}></div>
 		<span class="flex">
 			<label for="speed">{speed}x</label>
 			<input name="speed" type="range" min="0.25" max="3" step="0.25" bind:value={speed} />
