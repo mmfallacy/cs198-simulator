@@ -34,7 +34,7 @@
 		}
 	}
 
-	const workers = new WorkerPool(14);
+	const workers = new WorkerPool(100);
 
 	const display = readable(workers.pool, function (set) {
 		workers.subscribe(set);
@@ -48,16 +48,6 @@
 		if (!isFinite(minroot)) return Number.NEGATIVE_INFINITY;
 		return minroot;
 	}
-
-	function test() {
-		const test = structuredClone(initialParameters);
-		test.FV.vx = 3;
-		test.LV.vx = 5.709030100334492;
-		test.FV.ax = -9.732441471571903;
-		test.Sim.id = 0.2401337792641174;
-		console.log(mttc(test));
-	}
-	test();
 
 	let totalDispatched = 0,
 		totalDone = 0;
