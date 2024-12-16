@@ -33,3 +33,7 @@ export function* linspace(start: number, stop: number, gran: number) {
 		yield start;
 	}
 }
+
+export function noop(...args: any[]) {
+	return;
+}
