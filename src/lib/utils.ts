@@ -22,3 +22,14 @@ export function adapter(params: ParameterInput) {
 		dmin: params.Sim.dmin
 	};
 }
+
+// Derived from numpy's `linspace` function
+// https://github.com/numpy/numpy/blob/v1.26.0/numpy/core/function_base.py#L24-L182
+export function* linspace(start: number, stop: number, gran: number) {
+	const delta = stop - start;
+	const div = gran - 1;
+	while (start < stop) {
+		start += delta / div;
+		yield start;
+	}
+}

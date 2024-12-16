@@ -4,7 +4,7 @@
 	import { WorkerPool } from '$lib/worker/pool';
 	import { readable } from 'svelte/store';
 	import { Algorithms } from '$lib/const';
-	import { adapter, quadrealroot } from '$lib/utils';
+	import { adapter, linspace, quadrealroot } from '$lib/utils';
 	import type { ParameterInput } from '$lib/stores/parameter/types';
 	import { assert } from '$lib/assert';
 
@@ -12,8 +12,8 @@
 		YLIM = 30,
 		GRAN = 300;
 
-	const dAspace = linspace(-XLIM, XLIM, GRAN),
-		dVspace = linspace(-YLIM, YLIM, GRAN),
+	const dAspace = Array.from(linspace(-XLIM, XLIM, GRAN)),
+		dVspace = Array.from(linspace(-YLIM, YLIM, GRAN)),
 		vfspace = [3, 12, 24];
 
 	type ValidAlgorithm = keyof typeof Algorithms;
@@ -43,16 +43,6 @@
 
 	defaultTask.simParams.Sim.tps = 120;
 
-	// Derived from numpy's `linspace` function
-	// https://github.com/numpy/numpy/blob/v1.26.0/numpy/core/function_base.py#L24-L182
-	function* linspace(start: number, stop: number, gran: number) {
-		const delta = stop - start;
-		const div = gran - 1;
-		while (start < stop) {
-			start += delta / div;
-			yield start;
-		}
-	}
 
 	const workers = new WorkerPool(100);
 
