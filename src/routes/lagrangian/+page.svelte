@@ -9,7 +9,13 @@
 	import { Application } from 'pixi.js';
 	import Params from '$lib/components/Params.svelte';
 	import { pixiCanvas } from '$lib/actions/pixiCanvas';
-	import { addToCenter, createMarker, createRoad, createVehicle } from '$lib/rendererUtils';
+	import {
+		addToCenter,
+		createMarkedRoad,
+		createMarker,
+		createRoad,
+		createVehicle
+	} from '$lib/rendererUtils';
 	import { COLORS } from '$lib/colors';
 	import type { DeepReadonly } from '$lib/utils';
 	import type { State } from '$lib/simulator/types';
@@ -30,7 +36,7 @@
 	let isRendererRunning = false;
 	let state: DeepReadonly<State> | undefined = undefined;
 
-	const road = createRoad(90, app.screen.width);
+	const road = createMarkedRoad(90, 1000 * RATIO.px_per_m);
 	road.y = (app.screen.height - road.height) / 2;
 	app.stage.addChild(road);
 
@@ -43,7 +49,7 @@
 	addToCenter(road, marker);
 
 	function initializeRenderer() {
-		return () => {
+		function render() {
 			if (!isRendererRunning) return;
 
 			// Get state information.
@@ -51,22 +57,23 @@
 			if (done) return;
 
 			// Halt simulator on out of bounds
-			if (value.FV.x > app.screen.width) return;
 			if (value.tick > MAX_TICK) return;
-			if (value.FV.x * RATIO.px_per_m > app.screen.width) return;
 
 			// Update screen.
 
 			FV.x = value.FV.x * RATIO.px_per_m;
 			LV.x = value.LV.x * RATIO.px_per_m;
+			if (LV.x + LV.width + 30 > app.screen.width)
+				road.x = app.screen.width - 30 - value.LV.x * RATIO.px_per_m - LV.width;
 			marker.x = (value.LV.x - value.dw) * RATIO.px_per_m;
 
 			// Store state for displaying
 			state = value;
 
 			// Set longer timeouts when speed < 1;
-			requestAnimationFrame(() => setTimeout(render, 100));
-		};
+			requestAnimationFrame(() => setTimeout(render, 10));
+		}
+		return render;
 	}
 
 	function reset() {
@@ -80,7 +87,7 @@
 
 	function start() {
 		isRendererRunning = true;
-		// requestAnimationFrame(initializeRenderer());
+		requestAnimationFrame(initializeRenderer());
 	}
 
 	function stop() {
