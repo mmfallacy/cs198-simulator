@@ -24,4 +24,6 @@ export const Algorithms = {
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 } as const;
 
+export type AlgorithmKeys = keyof typeof Algorithms;
+
 export const MAX_TICK = 10e5;
