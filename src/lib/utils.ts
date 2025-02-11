@@ -37,3 +37,7 @@ export function* linspace(start: number, stop: number, gran: number) {
 export function noop(...args: any[]) {
 	return;
 }
+
+export function sum(arr: Array<number>) {
+	return arr.reduce((sum, el) => sum + el, 0);
+}
