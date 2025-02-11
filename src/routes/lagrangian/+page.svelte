@@ -36,6 +36,7 @@
 	let isRendererRunning = false;
 	let state: DeepReadonly<State> | undefined = undefined;
 	let maxDistanceInMeters = 1000;
+	let followWhich = 'LV';
 
 	// createMarkedRoad takes width in meters as we will place signs every 100 meters.
 	const roadHeight = 100;
@@ -67,8 +68,12 @@
 
 			FV.x = value.FV.x * RATIO.px_per_m;
 			LV.x = value.LV.x * RATIO.px_per_m;
-			if (LV.x + LV.width + 30 > app.screen.width)
-				road.x = app.screen.width - 30 - value.LV.x * RATIO.px_per_m - LV.width;
+
+			const Follow = followWhich === 'FV' ? FV : LV;
+
+			if (Follow.x + Follow.width + 30 > app.screen.width)
+				road.x = app.screen.width - 30 - Follow.x - Follow.width;
+
 			marker.x = (value.LV.x - value.dw) * RATIO.px_per_m;
 
 			// Store state for displaying
@@ -144,6 +149,16 @@
 
 		<h4>Max run length (m)</h4>
 		<input type="number" bind:value={maxDistanceInMeters} />
+
+		<h4>Follow which?</h4>
+		<label>
+			<input type="radio" value="FV" bind:group={followWhich} />
+			FV
+		</label>
+		<label>
+			<input type="radio" value="LV" bind:group={followWhich} />
+			LV
+		</label>
 	</section>
 </main>
 
