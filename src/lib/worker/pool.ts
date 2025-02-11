@@ -1,6 +1,7 @@
 import { WorkerReturnSchema, type WorkerAction } from './types';
 import Worker from '$lib/worker/worker?worker';
 import * as v from 'valibot';
+import { noop } from '$lib/utils';
 
 function runWorker(worker: Worker, action: WorkerAction) {
 	return new Promise((resolve) => {
@@ -26,13 +27,15 @@ export type PoolSubscriber = (value: Array<PoolEntry>) => unknown;
 export class WorkerPool {
 	#pool: Array<PoolEntry>;
 	#subscribers: Array<PoolSubscriber>;
+	#logger: Function;
 
 	get pool() {
 		return this.#pool;
 	}
 
-	constructor(size: number) {
+	constructor(size: number, verbose = false) {
 		this.#pool = [];
+		this.#logger = verbose ? console.log : noop;
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		for (const id of Array(size)
 			.fill(0)
@@ -42,6 +45,15 @@ export class WorkerPool {
 				worker: new Worker(),
 				status: 'idle'
 			});
+		this.#subscribers = [];
+	}
+
+	destructor() {
+		this.#pool.forEach(function (entry) {
+			entry.worker.terminate();
+		});
+
+		this.#pool = [];
 		this.#subscribers = [];
 	}
 
@@ -58,6 +70,7 @@ export class WorkerPool {
 	selectWorker(): Promise<PoolEntry> {
 		return new Promise((resolve) => {
 			const timeout = 5;
+
 			const check = () => {
 				const result = this.getIdleWorker();
 				if (result) resolve(result);
@@ -88,10 +101,10 @@ export class WorkerPool {
 
 	async dispatch(action: WorkerAction) {
 		const entry = await this.selectWorker();
-		console.log(`Worker ${entry.id} running: `, action);
+		this.#logger(`Worker ${entry.id} running: `, action);
 		const result = await runWorker(entry.worker, action);
 		this.releaseWorker(entry);
-		console.log(`Worker ${entry.id} released`);
+		this.#logger(`Worker ${entry.id} released`, result);
 
 		return result;
 	}
