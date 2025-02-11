@@ -48,7 +48,7 @@
 		fcwaKey: 'onecar',
 		params: {
 			maxDistanceInMeters: 1000,
-			maxTicks: 20000
+			maxTicks: 100000
 		}
 	};
 
@@ -136,10 +136,13 @@
 		match.run = run;
 	}
 
+	let elapsedTime: undefined | number = $state(undefined);
 	async function runAllTasks() {
+		const startTime = performance.now();
 		for (const task of tasks) {
 			if (task.run) await start(task);
 		}
+		elapsedTime = performance.now() - startTime;
 	}
 
 	let isAnyTaskRunning = $state(false);
@@ -190,5 +193,8 @@ Results:
 			<h2>Run All</h2></button
 		>
 		<h2>{totalDone}/{totalTasks}</h2>
+		{#if elapsedTime}
+			<h2>Elapsed Time: {elapsedTime}</h2>
+		{/if}
 	</span>
 </div>
