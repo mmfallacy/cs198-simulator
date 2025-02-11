@@ -35,8 +35,11 @@
 	let sim = createSimulator();
 	let isRendererRunning = false;
 	let state: DeepReadonly<State> | undefined = undefined;
+	let maxDistanceInMeters = 1000;
 
-	const road = createMarkedRoad(90, 1000 * RATIO.px_per_m);
+	// createMarkedRoad takes width in meters as we will place signs every 100 meters.
+	const roadHeight = 100;
+	const road = createMarkedRoad(roadHeight, maxDistanceInMeters);
 	road.y = (app.screen.height - road.height) / 2;
 	app.stage.addChild(road);
 
@@ -44,20 +47,21 @@
 	const LV = createVehicle(COLORS.GREEN[500]);
 	const marker = createMarker(COLORS.GREEN[200]);
 
-	addToCenter(road, FV);
-	addToCenter(road, LV);
-	addToCenter(road, marker);
+	FV.y = (roadHeight - FV.height) / 2;
+	LV.y = (roadHeight - LV.height) / 2;
+	marker.y = (roadHeight - marker.height) / 2;
+
+	road.addChild(FV);
+	road.addChild(LV);
+	road.addChild(marker);
 
 	function initializeRenderer() {
 		function render() {
 			if (!isRendererRunning) return;
 
 			// Get state information.
+			for (const _ of Array(speed).map((i) => i)) sim.next();
 			const { value, done } = sim.next();
-			if (done) return;
-
-			// Halt simulator on out of bounds
-			if (value.tick > MAX_TICK) return;
 
 			// Update screen.
 
@@ -70,8 +74,13 @@
 			// Store state for displaying
 			state = value;
 
+			if (done) return;
+			// Halt simulator on out of bounds
+			if (value.tick > MAX_TICK) return;
+			// Halt on max distance run
+			if (value.FV.x >= maxDistanceInMeters) return;
 			// Set longer timeouts when speed < 1;
-			requestAnimationFrame(() => setTimeout(render, 10));
+			requestAnimationFrame(() => setTimeout(render, 5));
 		}
 		return render;
 	}
@@ -80,9 +89,10 @@
 		sim = createSimulator();
 		isRendererRunning = false;
 
-		LV.x = app.screen.width - LV.width - 30;
-		FV.x = LV.x - FV.width - $params.Sim.id;
-		marker.x = FV.x;
+		LV.x = 0;
+		FV.x = 0;
+		marker.x = 0;
+		road.x = 0;
 	}
 
 	function start() {
@@ -108,6 +118,8 @@
 	<section>
 		<div use:pixiCanvas={app.view}></div>
 		<span class="flex">
+			<label for="speed">{speed}x</label>
+			<input name="speed" type="range" min="1" max="10" step="0.5" bind:value={speed} />
 			{#if isRendererRunning}
 				<button on:click={stop}>Stop</button>
 			{:else}
@@ -129,6 +141,9 @@
 	</section>
 	<section class="params">
 		<Params />
+
+		<h4>Max run length (m)</h4>
+		<input type="number" bind:value={maxDistanceInMeters} />
 	</section>
 </main>
 

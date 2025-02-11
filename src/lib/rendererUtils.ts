@@ -1,6 +1,6 @@
 import { COLORS } from '$lib/colors';
-import { Container, Graphics, type ColorSource } from 'pixi.js';
-import { CAR_DIMENSIONS } from './const';
+import { Container, Graphics, Text, type ColorSource } from 'pixi.js';
+import { CAR_DIMENSIONS, RATIO } from './const';
 
 export function createRoad(h: number, w: number) {
 	const road = new Graphics();
@@ -34,13 +34,15 @@ export function addToCenter(
 	x: boolean = false,
 	y: boolean = true
 ) {
+	console.log(parent.width, parent.height);
 	if (x) child.x = (parent.width - child.width) / 2;
 	if (y) child.y = (parent.height - child.height) / 2;
 
 	parent.addChild(child);
 }
 
-export function createMarkedRoad(h: number, w: number) {
+export function createMarkedRoad(h: number, _w: number) {
+	const w = (_w + 50) * RATIO.px_per_m;
 	const road = new Graphics();
 	road.beginFill(COLORS.NEUTRAL[900]);
 	road.drawRect(0, 0, w, h);
@@ -51,13 +53,33 @@ export function createMarkedRoad(h: number, w: number) {
 	laneTemplate.drawRect(0, -2, CAR_DIMENSIONS.w * 0.8, 7);
 	laneTemplate.endFill();
 
-	const nDash = w / (laneTemplate.width * 2);
-	console.log('ndash', nDash);
-	for (let i = 0; i < nDash; i++) {
+	for (let i = 0; i < w; i += laneTemplate.width * 2) {
 		let dash = new Graphics(laneTemplate.geometry);
 		road.addChild(dash);
 		dash.y = 0;
-		dash.x = i * 2 * laneTemplate.width;
+		dash.x = i;
 	}
+
+	const signTemplate = new Graphics();
+	signTemplate.beginFill(COLORS.NEUTRAL[400]);
+	signTemplate.drawRect(0, 0, 3, 40);
+	signTemplate.endFill();
+
+	// Signs on every 100 meter marker
+	for (let i = 0; i <= _w; i += 100) {
+		let sign = new Graphics(signTemplate.geometry);
+
+		let label = new Text(`${i} m`, {
+			fill: COLORS.NEUTRAL[400]
+		});
+		sign.addChild(label);
+		label.x = 5;
+		label.y = 0;
+
+		road.addChild(sign);
+		sign.y = -sign.height - 10;
+		sign.x = i * RATIO.px_per_m;
+	}
+
 	return road;
 }
