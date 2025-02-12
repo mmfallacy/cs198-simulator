@@ -148,7 +148,7 @@
 		<Params />
 
 		<h4>Max run length (m)</h4>
-		<input type="number" bind:value={maxDistanceInMeters} />
+		<input type="number" bind:value={maxDistanceInMeters} disabled />
 
 		<h4>Follow which?</h4>
 		<label>
