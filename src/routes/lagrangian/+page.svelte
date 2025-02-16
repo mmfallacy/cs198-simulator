@@ -134,6 +134,7 @@
 			<button on:click={reset}>Reset</button>
 		</span>
 		{#if typeof state != 'undefined'}
+			<h4>Tick: {state.tick}</h4>
 			<h4>Current Headway: {state.headway}</h4>
 			<h4>Average Headway: {state.ave_headway}</h4>
 			{#if typeof state.FV != 'undefined'}
