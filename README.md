@@ -40,11 +40,11 @@ The renderer serves as the runner which prompts the simulator generator function
 
 The default renderer displays the scenario derived from the given parameters as a whole. That is, as the vehicle representation goes out of bounds, the simulation halts. 
 
-<video controls src="assets/zen_yYO9KHLm4C.mp4" title="Default Renderer"></video>
+<video controls src="https://github.com/user-attachments/assets/5665aec5-0641-473d-880e-b8c04f526a1c" title="Default Renderer"></video>
 
 On the other hand, the lagrangian simulator works a bit differently. It still retains the mechanism where the renderer prompts the simulator for values, as well as the metric-to-pixel conversion. However, the simulation halting condition with this renderer is based on the set maximum run distance (by default, 1 kilometer). The renderer pans the view as the vehicles go out of bounds, with options to follow the FV or LV. For ease of interpretation, lane markers are also renderered as well as signs for every 100m of the road.
 
-<video controls src="assets/zen_fTB3jfZ0nv.mp4" title="Lagrangian Renderer"></video>
+<video controls src="https://github.com/user-attachments/assets/4503f600-40d6-4514-a437-a571c27a3e87" title="Lagrangian Renderer"></video>
 
 Both renderers keep track and display certain metrics such as:
 - Current headway
@@ -62,7 +62,7 @@ This project also houses a parallel runner located in the `parallel` Svelte rout
 
 > I recommend running the parallel runner in a chromium-based browser. Firefox-based browsers tend to finish all tasks twice as longer.
 
-<video controls src="assets/opera_bOLBR8bYLw.mp4" title="Parallel Runner"></video>
+<video controls src="https://github.com/user-attachments/assets/d0d7540f-f4f1-4f32-984d-2fcc691406fd" title="Parallel Runner"></video>
 
 ### Persistence Layer
 
