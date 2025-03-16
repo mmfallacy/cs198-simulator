@@ -124,7 +124,7 @@
 		<div use:pixiCanvas={app.view}></div>
 		<span class="flex">
 			<label for="speed">{speed}x</label>
-			<input name="speed" type="range" min="1" max="10" step="0.5" bind:value={speed} />
+			<input name="speed" type="range" min="1" max="20" step="0.5" bind:value={speed} />
 			{#if isRendererRunning}
 				<button on:click={stop}>Stop</button>
 			{:else}
@@ -143,6 +143,10 @@
 			<h4>Warning Distance ({state.dw_hit ? 'Hit' : 'No Hit'}): {state.dw}</h4>
 			<h4>Current MTTC: {state.mttc}</h4>
 			<h4>MTTC on first warning distance hit: {state.first_mttc ?? 'not yet hit'}</h4>
+
+			<p>
+				{state.first_mttc ?? 'not yet hit'}, {state.FV.ave_vx}, {state.ave_headway}, {state.tick}
+			</p>
 		{/if}
 	</section>
 	<section class="params">
