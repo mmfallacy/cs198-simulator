@@ -92,6 +92,7 @@
 
 	function reset() {
 		sim = createSimulator();
+		state = undefined;
 		isRendererRunning = false;
 
 		LV.x = 0;
