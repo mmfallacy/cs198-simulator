@@ -2,17 +2,11 @@
   description = "cs198-simulator";
   inputs = {
     nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-24.11";
+    systems.url = "github:nix-systems/default";
   };
 
-  # Loosely based on https://github.com/ghostty-org/ghostty nix shell configurations
   outputs =
-    {
-      nixpkgs-stable,
-      ...
-    }:
-    let
-      supportedSystems = [ "x86_64-linux" ];
-    in
+    { nixpkgs-stable, systems, ... }:
     builtins.foldl' (a: b: a // b) { } (
       builtins.map (
         system:
@@ -20,11 +14,8 @@
           pkgs-stable = nixpkgs-stable.legacyPackages.${system};
         in
         {
-          devShells.${system}.default = import ./nix/devShell.nix {
-            pkgs = pkgs-stable;
-            lib = pkgs-stable.lib;
-          };
+          devShells.${system}.default = import ./nix/devShell.nix { pkgs = pkgs-stable; };
         }
-      ) supportedSystems
+      ) (import systems)
     );
 }
