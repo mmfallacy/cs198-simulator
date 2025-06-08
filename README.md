@@ -1,4 +1,4 @@
-This repository holds the ad-hoc simulator source code used for generating simulation data for the CS 198/199 thesis entitled "Comparative Analaysis of Perceptual Forward Collision Warning Algorithms"
+This repository contains the source code for the ad hoc simulator used to generate data across various two-car following system scenarios. The collected data supports the benchmarking and comparison of three perceptual Forward Collision Warning Algorithms (FCWA) based on safety and driver efficiency metrics.
 
 # Comparative Analysis of Perceptual forward Collision Warning Algorithms
 
@@ -45,9 +45,7 @@ performance.
 
 The simulator has four key components: the simulator generator function, the renderer, the parallel processing infrastructure, and the persistence layer.
 
-### Simulator Generator Function
-
-The simulator generator function is a TypeScript generator which aims to lazily generate simulation states. This function is strictly detached from all other components, allowing for headless invocations. 
+### Simulator Generator Function The simulator generator function is a TypeScript generator which aims to lazily generate simulation states. This function is strictly detached from all other components, allowing for headless invocations. 
 
 The function resides in `./src/lib/simulator/simulator.ts` with sample usage in `(renderer)`, `lagrangian` and `parallel` Svelte routes.
 
@@ -106,10 +104,9 @@ As this project is written with heavy time constraints, there are a few more ave
 - Migrate to Svelte 5
 - Migrate to PixiJS v8
 
+## Acknowledgements
+This project was developed as part of my undergraduate thesis under the [Scientific Computing Laboratory](https://scl.dcs.upd.edu.ph/) of the [Department of Computer Science](https://dcs.upd.edu.ph/), [College of Engineering](https://coe.upd.edu.ph/) at the [University of the Philippines Diliman](https://upd.edu.ph/).
+
+Special thanks to [Dr. Jaymar B. Soriano](https://scl.dcs.upd.edu.ph/members/jbsoriano) for his guidance and support throughout the research.
+
 Copyright (C) 2025, Michael M. <mlmonasterial@up.edu.ph>.
-
-This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more details.
-
-You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <https://www.gnu.org/licenses/>.
