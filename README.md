@@ -24,6 +24,23 @@ Future research should explore real-world implementation and extend the analysis
 to more complex traffic scenarios, such as vehicle platoons, to further refine FCW
 performance.
 
+# Usage
+
+<details>
+<summary>- Running through `nix`</summary>
+- Run `nix develop` to bootstrap a shell that includes `nodejs_23` and pnpm through corepack.
+> You can also use this devShell (`./nix/devShell.nix`) as your development environment!
+- `pnpm install`
+- `pnpm dev`
+</details>
+
+<details>
+<summary>- Other systems</summary>
+- install NodeJS v23 and `pnpm` manually or through `corepack`.
+- `pnpm install`
+- `pnpm dev`
+</details>
+
 ## Project Structure
 
 The simulator has four key components: the simulator generator function, the renderer, the parallel processing infrastructure, and the persistence layer.
@@ -71,9 +88,10 @@ The simulation framework utilizes Dexie.js, a lightweight and performant wrapper
 ## Remarks and Recommendations
 
 This ad-hoc simulator is written in TypeScript with the following technologies:
-- [Svelte](https://svelte.dev/)
-- [Valibot](https://valibot.dev/)
-- [PixiJS](https://pixijs.com/)
+- [Svelte v5](https://svelte.dev/)
+> This project uses Svelte v5, however some routes are still not migrated.
+- [Valibot v0.31](https://valibot.dev/)
+- [PixiJS v7](https://pixijs.com/)
 - [DexieJS](https://dexie.org/)
 - [Tailwind](https://tailwindcss.com/)
 - [`@solana/fast-stable-stringify`](https://www.npmjs.com/package/@solana/fast-stable-stringify)
